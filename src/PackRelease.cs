@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -13,7 +13,7 @@ namespace LavaBox.PackHelper
 {
     public sealed class PackRelease
     {
-        public string appVersion = "1.0.0";
+        public string appVersion = "1.1.0";
         public string packVersion;
         public string packId;
         public string sha1;
@@ -25,6 +25,8 @@ namespace LavaBox.PackHelper
 
         public void Validate()
         {
+            UpdateManifest.VersionOf(appVersion);
+            UpdateManifest.VersionOf(packVersion);
             Guid id;
             if (!Guid.TryParseExact(packId, "D", out id) || packId != id.ToString())
                 throw new InvalidDataException("Неверный идентификатор ресурспака.");

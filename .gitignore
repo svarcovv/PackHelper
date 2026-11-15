@@ -1,6 +1,7 @@
 dist/
 test-work/
 payload/
+.build/
 *.log
 *.zip
 *.exe

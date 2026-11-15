@@ -71,6 +71,7 @@ static class CoreTests
         Check(GameDiscovery.Candidate(root, release).NeedsCacheEvidence, "OpSec without target cache evidence blocks guessing");
         File.WriteAllText(Path.Combine(logs, "latest.log"), "[OpSec] Loaded config\n" + log);
         Check(!GameDiscovery.Candidate(root, release).NeedsCacheEvidence, "explicit log path takes priority over mod detection");
+        count += UpdateTests.Run(root,release);
         Console.WriteLine("All " + count + " checks passed. Fixture: " + root);
     }
 }

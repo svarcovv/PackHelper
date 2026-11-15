@@ -1,38 +1,36 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
+﻿using System;
 using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+using System.Reflection;
+using System.Windows;
 
-[assembly: System.Reflection.AssemblyTitle("LavaBox PackHelper")]
+[assembly: System.Reflection.AssemblyTitle("PackHelper")]
+[assembly: System.Reflection.AssemblyProduct("PackHelper")]
 [assembly: System.Reflection.AssemblyDescription("Офлайн-установка серверного ресурспака LavaBox")]
 [assembly: System.Reflection.AssemblyCompany("svarcovv")]
-[assembly: System.Reflection.AssemblyVersion("1.0.0.0")]
-[assembly: System.Reflection.AssemblyFileVersion("1.0.0.0")]
+[assembly: System.Runtime.Versioning.TargetFramework(".NETFramework,Version=v4.8", FrameworkDisplayName=".NET Framework 4.8")]
 
 namespace LavaBox.PackHelper
 {
     static class Program
     {
-        [DllImport("user32.dll")] private static extern bool SetProcessDPIAware();
         [STAThread] static void Main(string[] args)
         {
             AppContext.SetSwitch("Switch.System.IO.UseLegacyPathHandling", false);
             AppContext.SetSwitch("Switch.System.IO.BlockLongPaths", false);
-            if (Environment.OSVersion.Version.Major >= 6) SetProcessDPIAware();
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
             try
             {
-                string demo = null;
-                if (args.Length == 2 && args[0] == "--demo-folder") demo = PackPaths.Normalize(args[1]);
-                Application.Run(new MainForm(PackRelease.Embedded(), demo));
+                if (args.Length > 0 && args[0] == "--apply-update") { SelfUpdate.ApplyAndRestart(args, Assembly.GetExecutingAssembly().Location); return; }
+                string demo = null, folder = null, recording = null;
+                for (int i = 0; i < args.Length; i++)
+                {
+                    if (args[i] == "--demo-folder" && i+1 < args.Length) demo = PackPaths.Normalize(args[++i]);
+                    else if (args[i] == "--game-folder" && i+1 < args.Length) folder = PackPaths.Normalize(args[++i]);
+                    else if (args[i] == "--record" && i+1 < args.Length) recording = PackPaths.Normalize(args[++i]);
+                }
+                var app = new Application { ShutdownMode = ShutdownMode.OnMainWindowClose };
+                app.Run(new MainWindow(PackRelease.Embedded(), demo, folder, recording));
             }
-            catch (Exception error) { MessageBox.Show(error.Message, "PackHelper - не удалось открыть выпуск", MessageBoxButtons.OK, MessageBoxIcon.Error); }
+            catch (Exception error) { MessageBox.Show(error.Message, "PackHelper", MessageBoxButton.OK, MessageBoxImage.Error); }
         }
     }
 
