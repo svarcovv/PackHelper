@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -20,6 +20,8 @@ namespace LavaBox.PackHelper
         {
             if (String.IsNullOrWhiteSpace(path) || !Regex.IsMatch(path, "\\A[A-Za-z]:[\\\\/]"))
                 throw new InvalidDataException("Выберите локальную папку Minecraft на этом компьютере.");
+            if(path.IndexOf(':',2)>=0 || path.IndexOfAny(new[]{'\0','\r','\n'})>=0)
+                throw new InvalidDataException("Недопустимый путь к папке игры.");
             return Path.GetFullPath(path).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
         }
 

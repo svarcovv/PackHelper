@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -35,7 +35,10 @@ namespace LavaBox.PackHelper
             {
                 bool truncated = stream.Length > 4194304;
                 if (truncated) stream.Seek(-4194304, SeekOrigin.End);
-                using (var reader = new StreamReader(stream, Encoding.UTF8, true))
+                // Snapshot at most 4 MiB, even if another process keeps appending to the log.
+                byte[] bytes=new byte[(int)Math.Min(stream.Length-stream.Position,4194304)];int used=0,n;
+                while(used<bytes.Length&&(n=stream.Read(bytes,used,bytes.Length-used))>0)used+=n;
+                using (var reader = new StreamReader(new MemoryStream(bytes,0,used), Encoding.UTF8, true))
                 {
                     if (truncated) reader.ReadLine();
                     return reader.ReadToEnd();

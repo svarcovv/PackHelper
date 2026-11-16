@@ -57,6 +57,7 @@ static class FeatureTests
         {try{await client.Statistics(CancellationToken.None);}catch(InvalidDataException){rejected=true;}}
         Check(rejected,"invalid download counts do not become displayed statistics");
         var latest=new UpdateManifest{schemaVersion=1,appVersion="9.1.0",packVersion=pack.packVersion,packId=pack.packId,packSha1=pack.sha1,packSha256=pack.sha256,exeName="PackHelper-9.1.0.exe",exeSize=2048,exeSha256=new string('a',64),downloadUrl="https://github.com/svarcovv/PackHelper/releases/download/v9.1.0/PackHelper-9.1.0.exe"};
+        UpdateTests.Sign(latest);
         string cache=Path.Combine(root,"status-cache");var status=new PublicStatusCache{Downloads=10,DownloadsComplete=true,DownloadsCheckedUtc=DateTime.UtcNow,Latest=latest,ReleaseCheckedUtc=DateTime.UtcNow};status.Save(cache);
         var read=PublicStatusCache.Read(cache,pack.packId);Check(read.Downloads==10&&read.Latest.appVersion=="9.1.0","public counters and release metadata are available from offline cache");
         Check(PublicStatusCache.Read(cache,Guid.NewGuid().ToString()).Latest==null,"cached release for another pack is rejected");

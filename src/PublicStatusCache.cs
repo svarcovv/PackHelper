@@ -22,7 +22,7 @@ namespace LavaBox.PackHelper
                 if(!File.Exists(file)||new FileInfo(file).Length>65536)return new PublicStatusCache();
                 var result=new JavaScriptSerializer().Deserialize<PublicStatusCache>(File.ReadAllText(file,Encoding.UTF8));
                 if(result==null||result.Downloads<0)return new PublicStatusCache();
-                if(result.Latest!=null)result.Latest.Validate(packId);
+                if(result.Latest!=null)UpdateTrust.Verify(result.Latest,packId);
                 return result;
             }
             catch(IOException){}catch(InvalidDataException){}catch(UnauthorizedAccessException){}catch(ArgumentException){}catch(InvalidOperationException){}

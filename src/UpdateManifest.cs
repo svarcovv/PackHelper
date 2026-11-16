@@ -8,7 +8,7 @@ namespace LavaBox.PackHelper
     {
         public int schemaVersion;
         public string appVersion, packVersion, packId, packSha1, packSha256;
-        public string exeName, exeSha256, downloadUrl;
+        public string exeName, exeSha256, downloadUrl, signature;
         public long exeSize;
 
         public static Version VersionOf(string value)

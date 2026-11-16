@@ -8,7 +8,17 @@ jobs:
   test:
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
       - name: Проверить установку
         shell: pwsh
         run: ./test.ps1
+      - name: Проверить интерфейс
+        shell: powershell
+        run: |
+          New-Item -ItemType Directory test-work/pack -Force | Out-Null
+          '{"pack":{"pack_format":46,"description":"UI test fixture"}}' | Set-Content test-work/pack/pack.mcmeta -Encoding UTF8
+          Compress-Archive test-work/pack/pack.mcmeta test-work/fixture.zip
+          ./build.ps1 -PackPath test-work/fixture.zip -PackVersion 1.0.0 -UnsignedDevelopment
+          ./test-ui.ps1 -ExecutablePath dist/PackHelper-1.5.0.exe

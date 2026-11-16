@@ -78,6 +78,7 @@ static class CoreTests
         Check(!GameDiscovery.Candidate(root, release).NeedsCacheEvidence, "explicit log path takes priority over mod detection");
         count += UpdateTests.Run(root,release);
         count += FeatureTests.Run(root,release);
+        count += SecurityTests.Run(root,release);
         Console.WriteLine("All " + count + " checks passed. Fixture: " + root);
     }
 }

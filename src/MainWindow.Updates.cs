@@ -45,7 +45,7 @@ namespace LavaBox.PackHelper
             catch(Exception error)
             {
                 Element<TextBlock>("UpdateTitle").Text="Не удалось проверить обновления";
-                Element<TextBlock>("UpdateDetail").Text="GitHub не ответил. Попробуй позже или возьми свежий EXE в поддержке.";
+                Element<TextBlock>("UpdateDetail").Text=error is InvalidDataException?"Не удалось подтвердить подлинность выпуска. Установка встроенного пака доступна без обновления.":"GitHub не ответил. Попробуй позже.";
                 if(page=="Updates")Message(error is System.Net.Http.HttpRequestException || error is TaskCanceledException ? "Проверка не завершена. Попробуй ещё раз." : error.Message,true);
             }
             finally{checkingUpdates=false;checkUpdates.IsEnabled=!busy;checkUpdates.Content="Проверить обновления";}
@@ -66,25 +66,31 @@ namespace LavaBox.PackHelper
                 (game==null?"Выбери сборку, чтобы проверить установленный пак.":state.Installed?"В сборке установлен пак из последнего выпуска.":"Пак из последнего выпуска в этой сборке ещё не установлен.");
             downloadUpdate.Content="Обновить приложение";
             downloadUpdate.Visibility=newer||(same&&packChanged)?Visibility.Visible:Visibility.Collapsed;
+            checkUpdates.Style=(Style)Resources[downloadUpdate.Visibility==Visibility.Visible?"Secondary":"Primary"];
         }
 
         private async Task DownloadUpdate()
         {
             if(manualUpdate){OpenUrl(release.sourceUrl+"/releases/latest");return;}
-            if(latest==null)return;
+            var update=latest;if(update==null)return;
             SetBusy(true);progress.IsIndeterminate=false;progress.Value=0;
             try
             {
-                Message("Скачиваем PackHelper "+latest.appVersion+" с ресурспаком "+latest.packVersion+"…",false);
+                Message("Скачиваем PackHelper "+update.appVersion+" с ресурспаком "+update.packVersion+"…",false);
                 string cache=Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),"PackHelper","Updates");
                 string downloaded;
                 using(var cancel=new CancellationTokenSource(TimeSpan.FromMinutes(3)))
                 using(var client=new UpdateClient())
-                    downloaded=await client.Download(latest,release.packId,cache,new Progress<int>(p=>{progress.Value=p;}),cancel.Token);
+                    downloaded=await client.Download(update,release.packId,cache,new Progress<int>(p=>{progress.Value=p;}),cancel.Token);
                 string current=Assembly.GetExecutingAssembly().Location;
                 string oldHash=PackInstall.Hash(current,true);
-                string arguments="--apply-update "+Process.GetCurrentProcess().Id+" "+SelfUpdate.Quote(current)+" "+oldHash+" "+latest.exeSha256+" "+SelfUpdate.Quote(Selected==null?"":Selected.GameDirectory);
-                Process.Start(new ProcessStartInfo(downloaded,arguments){UseShellExecute=false,CreateNoWindow=true});
+                string arguments="--apply-update "+Process.GetCurrentProcess().Id+" "+SelfUpdate.Quote(current)+" "+oldHash+" "+update.exeSha256+" "+SelfUpdate.Quote(Selected==null?"":Selected.GameDirectory);
+                PackPaths.RejectLinks(downloaded);
+                using(var locked=new FileStream(PackPaths.Native(downloaded),FileMode.Open,FileAccess.Read,FileShare.Read))
+                {
+                    if(PackInstall.Hash(downloaded,true)!=update.exeSha256)throw new InvalidDataException("Файл обновления изменился перед запуском.");
+                    Process.Start(new ProcessStartInfo(downloaded,arguments){UseShellExecute=false,CreateNoWindow=true});
+                }
                 quitting=true;Application.Current.Shutdown();
             }
             catch(Exception error){Message("Не удалось обновить приложение. "+error.Message+" Можно скачать выпуск с GitHub.",true);}

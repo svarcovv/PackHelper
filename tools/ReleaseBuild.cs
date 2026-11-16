@@ -40,6 +40,7 @@ namespace PackHelperBuilder
             var args=new List<string>{"/nologo","/target:winexe","/platform:anycpu","/optimize+","/codepage:65001","/r:System.Windows.Forms.dll","/r:System.Management.dll","/r:System.Web.Extensions.dll","/r:System.Net.Http.dll","/r:System.Xml.Linq.dll","/r:System.Xaml.dll",
                 "/out:"+exe,"/win32icon:"+Path.Combine(root,"assets","packhelper.ico"),"/win32manifest:"+Path.Combine(root,"app.manifest"),"/resource:"+pack+",LavaBox.Pack.zip","/resource:"+manifest+",LavaBox.Release.json","/resource:"+Path.Combine(root,"src","Window.xaml")+",PackHelper.Window.xaml"};
             foreach(string dll in new[]{"PresentationCore.dll","PresentationFramework.dll","WindowsBase.dll"})args.Add("/r:"+Path.Combine(framework,"WPF",dll));
+            args.Add("/resource:"+Path.Combine(root,"assets","update-public-key.xml")+",PackHelper.UpdatePublicKey.xml");
             args.AddRange(Directory.GetFiles(Path.Combine(root,"src"),"*.cs"));args.Add(version);
             args.Add("/resource:"+Path.Combine(root,"src","Theme.xaml")+",PackHelper.Theme.xaml");
             args.Add("/resource:"+Path.Combine(root,"assets","packhelper.ico")+",PackHelper.App.ico");
@@ -49,6 +50,7 @@ namespace PackHelperBuilder
             {string message=process.StandardOutput.ReadToEnd()+process.StandardError.ReadToEnd();process.WaitForExit();if(process.ExitCode!=0)throw new Exception(message);}
             string update=Path.Combine(output,"update.json");
             File.WriteAllText(update,json.Serialize(new{schemaVersion=1,appVersion=appVersion,packVersion=packVersion,packId=id,packSha1=sha1,packSha256=sha256,exeName=Path.GetFileName(exe),exeSize=new FileInfo(exe).Length,exeSha256=Hash(exe,"SHA256"),downloadUrl="https://github.com/svarcovv/PackHelper/releases/download/v"+appVersion+"/"+Path.GetFileName(exe)}),utf8);
+            File.WriteAllText(update,ReleaseSigning.Sign(File.ReadAllText(update),Path.Combine(root,"assets","update-public-key.xml")),utf8);
             File.WriteAllLines(Path.Combine(output,"SHA256SUMS.txt"),new[]{exe,manifest,update}.Select(file=>Hash(file,"SHA256")+"  "+Path.GetFileName(file)),utf8);
             return output;
         }

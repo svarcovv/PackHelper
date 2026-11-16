@@ -13,7 +13,7 @@ namespace LavaBox.PackHelper
     public sealed partial class UpdateClient : IDisposable
     {
         private readonly HttpClient client;
-        public UpdateClient() : this(new HttpClientHandler { AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate }) { }
+        public UpdateClient() : this(new HttpClientHandler { AllowAutoRedirect = false, UseCookies = false, AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate }) { }
         public UpdateClient(HttpMessageHandler handler)
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.SystemDefault;
@@ -21,9 +21,27 @@ namespace LavaBox.PackHelper
             client.DefaultRequestHeaders.UserAgent.ParseAdd("PackHelper/"+typeof(UpdateClient).Assembly.GetName().Version.ToString(3));
         }
 
+        private async Task<HttpResponseMessage> SendTrusted(string url, CancellationToken cancel)
+        {
+            var uri = new Uri(url);
+            bool releaseDownload = uri.Host == "github.com";
+            for (int redirects = 0; redirects <= 5; redirects++)
+            {
+                if (!TrustedUrls.IsRequest(uri, redirects != 0, releaseDownload))
+                    throw new InvalidDataException("Загрузка перенаправлена на недоверенный адрес.");
+                var response = await client.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead, cancel);
+                int code = (int)response.StatusCode;
+                if (code != 301 && code != 302 && code != 303 && code != 307 && code != 308) return response;
+                var next = response.Headers.Location;
+                response.Dispose();
+                if (next == null) throw new InvalidDataException("У перенаправления нет адреса.");
+                uri = next.IsAbsoluteUri ? next : new Uri(uri, next);
+            }
+            throw new InvalidDataException("Слишком много перенаправлений при загрузке.");
+        }
         private async Task<string> Json(string url, CancellationToken cancel)
         {
-            using (var response = await client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead, cancel))
+            using (var response = await SendTrusted(url, cancel))
             {
                 if (response.StatusCode == HttpStatusCode.NotFound) return null;
                 response.EnsureSuccessStatusCode();
@@ -67,13 +85,19 @@ namespace LavaBox.PackHelper
             string metadata = await Json(manifestUrl, cancel);
             if (metadata == null) throw new InvalidDataException("Файл update.json отсутствует в выпуске.");
             var manifest = serializer.Deserialize<UpdateManifest>(metadata);
-            manifest.Validate(packId);
+            if (manifest == null) throw new InvalidDataException("Пустые данные обновления.");
+            UpdateTrust.Verify(manifest, packId);
             return new UpdateCheck { Manifest = manifest };
         }
 
         public async Task<string> Download(UpdateManifest update, string packId, string root, IProgress<int> progress, CancellationToken cancel)
         {
-            update.Validate(packId);
+            // Freeze the verified metadata across awaits; never trust a mutable UI/cache object.
+            update = new JavaScriptSerializer().Deserialize<UpdateManifest>(new JavaScriptSerializer().Serialize(update));
+            UpdateTrust.Verify(update, packId);
+            var current = typeof(UpdateClient).Assembly.GetName().Version;
+            if (UpdateManifest.VersionOf(update.appVersion) < new Version(current.Major, current.Minor, current.Build))
+                throw new InvalidDataException("Установка более старой версии заблокирована.");
             string directory = Path.Combine(root, update.appVersion, update.exeSha256.Substring(0, 12));
             PackPaths.RejectLinks(directory); Directory.CreateDirectory(PackPaths.Native(directory));
             string file = Path.Combine(directory, update.exeName);
@@ -81,7 +105,7 @@ namespace LavaBox.PackHelper
             string temp = file + "." + Guid.NewGuid().ToString("N") + ".partial";
             try
             {
-                using (var response = await client.GetAsync(update.downloadUrl, HttpCompletionOption.ResponseHeadersRead, cancel))
+                using (var response = await SendTrusted(update.downloadUrl, cancel))
                 {
                     response.EnsureSuccessStatusCode();
                     if (response.Content.Headers.ContentLength.HasValue && response.Content.Headers.ContentLength.Value != update.exeSize)

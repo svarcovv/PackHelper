@@ -30,7 +30,7 @@ namespace LavaBox.PackHelper
                 using(var client=new UpdateClient())
                 {
                     timeout.CancelAfter(TimeSpan.FromSeconds(7));var result=await client.Check(release.packId,timeout.Token);
-                    if(result.Manifest!=null&&!checkingUpdates)
+                    if(result.Manifest!=null&&!checkingUpdates&&!busy)
                     {latest=result.Manifest;publicStatus.Latest=latest;publicStatus.ReleaseCheckedUtc=DateTime.UtcNow;await PresentUpdate(latest);await SavePublicStatus();}
                 }
             }
@@ -65,9 +65,9 @@ namespace LavaBox.PackHelper
         {
             var text=Element<TextBlock>("DownloadCount");
             text.Text=(publicStatus.Downloads.HasValue?(publicStatus.DownloadsComplete?"":"≥ ")+publicStatus.Downloads.Value.ToString("N0",CultureInfo.CurrentCulture):"Нет данных");
-            System.Windows.Automation.AutomationProperties.SetName(text,"Всего скачало: "+text.Text);
-            Element<Border>("DownloadStats").ToolTip="Скачивания EXE из опубликованных выпусков GitHub. Это не число уникальных игроков; Discord не учитывается."+
-                (publicStatus.Downloads.HasValue?"\nОбновлено: "+publicStatus.DownloadsCheckedUtc.ToLocalTime().ToString("g",CultureInfo.CurrentCulture):"");
+            System.Windows.Automation.AutomationProperties.SetName(text,"Скачиваний: "+text.Text);
+            Element<Border>("DownloadStats").ToolTip=new TextBlock { MaxWidth=310, TextWrapping=TextWrapping.Wrap, Foreground=Brush("Text"), Text="Скачивания приложения с GitHub. Повторные загрузки учитываются; загрузки из Discord — нет."+
+                (publicStatus.Downloads.HasValue?"\nОбновлено: "+publicStatus.DownloadsCheckedUtc.ToLocalTime().ToString("g",CultureInfo.CurrentCulture):"\nПодключись к интернету, чтобы увидеть счётчик.") };
         }
     }
 }

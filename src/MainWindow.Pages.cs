@@ -10,9 +10,11 @@ namespace LavaBox.PackHelper
 {
     public sealed partial class MainWindow
     {
-        private void Navigate(string target,bool animate=true)
+        private void Navigate(string target,bool animate=true,bool remember=true)
         {
-            if(busy)return;page=target;
+            if(busy)return;
+            if(remember&&target!=page){if(history.Count==32)history.RemoveAt(0);history.Add(page);}
+            page=target;
             string[] names={"Choose","Locate","Launcher","Log","Prepare","Done","Updates","Help","Support"};
             foreach(string name in names)Element<StackPanel>(name+"Page").Visibility=name==target?Visibility.Visible:Visibility.Collapsed;
             if(target=="Choose"||target=="Prepare"||target=="Done")installPage=target;
@@ -43,12 +45,13 @@ namespace LavaBox.PackHelper
             Element<Button>("Back").Visibility=target=="Choose"||target=="Updates"?Visibility.Collapsed:Visibility.Visible;
             Element<ScrollViewer>("PageScroll").ScrollToTop();Message("",false);RefreshActions();
             if(target=="Support")Element<TextBox>("Diagnostics").Text="PackHelper "+release.appVersion+"\nLavaResurs "+release.packVersion+"\nСборка: "+(Selected==null?"не выбрана":Selected.NeedsCacheEvidence?"нужен лог":Selected.Isolated?"изолированный кэш":"обычный кэш")+"\nПак: "+Element<TextBlock>("PackState").Text;
+            if(keyboardNavigation)Dispatcher.BeginInvoke(new Action(()=>{if(target=="Prepare")closed.Focus();else Element<StackPanel>(target+"Page").MoveFocus(new TraversalRequest(FocusNavigationDirection.First));}));
             // Keep keyboard navigation immediate; animate only occasional pointer transitions.
             var host=Element<Grid>("PageHost");host.BeginAnimation(OpacityProperty,null);host.RenderTransform=Transform.Identity;
             if(animate&&SystemParameters.ClientAreaAnimation&&!keyboardNavigation)
                 host.BeginAnimation(OpacityProperty,new DoubleAnimation(0.82,1,TimeSpan.FromMilliseconds(160)){FillBehavior=FillBehavior.Stop});
         }
-        private void GoBack(){Navigate(page=="Launcher"||page=="Log"?"Locate":page=="Prepare"||page=="Locate"?"Choose":installPage);}
+        private void GoBack(){string target=history.Count==0?"Choose":history[history.Count-1];if(history.Count>0)history.RemoveAt(history.Count-1);Navigate(target,true,false);}
         private async Task Next()
         {
             if(page=="Choose")

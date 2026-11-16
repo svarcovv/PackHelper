@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -28,6 +28,8 @@ namespace LavaBox.PackHelper
         {
             UpdateManifest.VersionOf(appVersion);
             UpdateManifest.VersionOf(packVersion);
+            if (server != "lavabox.fun" || sourceUrl != TrustedUrls.Repository || discordUrl != TrustedUrls.Discord || developerUrl != TrustedUrls.Developer)
+                throw new InvalidDataException("В выпуске изменены официальные адреса PackHelper.");
             Guid id;
             if (!Guid.TryParseExact(packId, "D", out id) || packId != id.ToString())
                 throw new InvalidDataException("Неверный идентификатор ресурспака.");

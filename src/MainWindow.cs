@@ -26,6 +26,7 @@ namespace LavaBox.PackHelper
         private bool busy, quitting, manualUpdate, keyboardNavigation, checkingUpdates, scanning;
         private int selectionRevision;
         private string page="Choose", installPage="Choose";
+        private readonly System.Collections.Generic.List<string> history=new System.Collections.Generic.List<string>();
         [DllImport("dwmapi.dll")] private static extern int DwmSetWindowAttribute(IntPtr window,int attribute,ref int value,int size);
 
         public MainWindow(PackRelease release,string demoFolder,string initialFolder,string recording)
@@ -64,7 +65,7 @@ namespace LavaBox.PackHelper
             AllowDrop=true;DragOver+=delegate(object sender,DragEventArgs e){e.Effects=e.Data.GetDataPresent(DataFormats.FileDrop)?DragDropEffects.Copy:DragDropEffects.None;e.Handled=true;};
             Drop+=async delegate(object sender,DragEventArgs e){var paths=e.Data.GetData(DataFormats.FileDrop) as string[];if(!busy&&paths!=null&&paths.Length==1)await ImportPath(paths[0]);};
             SourceInitialized+=delegate{try{int dark=1;DwmSetWindowAttribute(new WindowInteropHelper(this).Handle,20,ref dark,4);}catch(DllNotFoundException){}catch(EntryPointNotFoundException){}};
-            Loaded+=async delegate{await Scan();if(initialFolder!=null)await ImportPath(initialFolder);await LoadOnlineStatus();};
+            Loaded+=async delegate{await Scan();if(initialFolder!=null)await ImportPath(initialFolder);if(demoFolder==null)await LoadOnlineStatus();else ShowDownloadCount();};
             Closed+=delegate{onlineCancel.Cancel();};
             Closing+=delegate(object sender,System.ComponentModel.CancelEventArgs e){if(busy&&!quitting)e.Cancel=true;};
             PreviewKeyDown+=delegate{keyboardNavigation=true;};PreviewMouseDown+=delegate{keyboardNavigation=false;};
@@ -97,11 +98,14 @@ namespace LavaBox.PackHelper
         }
         private void RefreshActions()
         {
+            Element<Grid>("GameClosedRow").Visibility=page=="Prepare"?Visibility.Visible:Visibility.Collapsed;
             install.Visibility=page=="Choose"||page=="Prepare"||page=="Done"?Visibility.Visible:Visibility.Collapsed;
             install.IsEnabled=!busy&&!scanning&&(page=="Choose"?Selected!=null:page=="Prepare"?Selected!=null&&closed.IsChecked==true:true);
             Element<TextBlock>("InstallLabel").Text=busy&&page=="Prepare"?"Устанавливаем…":page=="Prepare"?"Установить пак":page=="Done"?"Закрыть":"Продолжить";
             System.Windows.Automation.AutomationProperties.SetName(install,Element<TextBlock>("InstallLabel").Text);
+            install.Style=(Style)Resources[page=="Done"?"Quiet":"Primary"];
+            Element<TextBlock>("InstallLabel").Foreground=Brush(page=="Done"?"Muted":"ActionText");
         }
-        private void OpenUrl(string url){try{Uri uri;if(Uri.TryCreate(url,UriKind.Absolute,out uri)&&uri.Scheme=="https")Process.Start(new ProcessStartInfo(uri.AbsoluteUri){UseShellExecute=true});}catch(Exception){Message("Не удалось открыть ссылку. Попробуй открыть её в браузере.",true);}}
+        private void OpenUrl(string url){try{if(!TrustedUrls.IsUserLink(url))throw new System.IO.InvalidDataException();Process.Start(new ProcessStartInfo(url){UseShellExecute=true});}catch(Exception){Message("Не удалось открыть официальную ссылку. Попробуй ещё раз.",true);}}
     }
 }

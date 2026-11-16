@@ -16,19 +16,19 @@
         <TextBlock Text="Ресурспак LavaBox" FontSize="12" Foreground="{DynamicResource Muted}" Margin="9,4,0,27" />
         <Button x:Name="NavInstall" Style="{StaticResource Nav}" AutomationProperties.Name="Установка">
           <StackPanel Orientation="Horizontal">
-            <Image x:Name="NavInstallIcon" Width="24" Height="24" Margin="0,0,11,0" />
+            <Image x:Name="NavInstallIcon" Width="20" Height="20" Margin="0,0,11,0" />
             <TextBlock Text="Установка" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" FontSize="14" VerticalAlignment="Center" />
           </StackPanel>
         </Button>
         <Button x:Name="NavUpdates" Style="{StaticResource Nav}" AutomationProperties.Name="Обновления">
           <StackPanel Orientation="Horizontal">
-            <Image x:Name="NavUpdatesIcon" Width="24" Height="24" Margin="0,0,11,0" />
+            <Image x:Name="NavUpdatesIcon" Width="20" Height="20" Margin="0,0,11,0" />
             <TextBlock Text="Обновления" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" FontSize="14" VerticalAlignment="Center" />
           </StackPanel>
         </Button>
         <Button x:Name="NavHelp" Style="{StaticResource Nav}" AutomationProperties.Name="Помощь">
           <StackPanel Orientation="Horizontal">
-            <Image x:Name="NavHelpIcon" Width="24" Height="24" Margin="0,0,11,0" />
+            <Image x:Name="NavHelpIcon" Width="20" Height="20" Margin="0,0,11,0" />
             <TextBlock Text="Помощь" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" FontSize="14" VerticalAlignment="Center" />
           </StackPanel>
         </Button>
@@ -36,13 +36,13 @@
       <StackPanel Grid.Row="2">
         <Button x:Name="Support" Style="{StaticResource Nav}" AutomationProperties.Name="Поддержка">
           <StackPanel Orientation="Horizontal">
-            <Image x:Name="SupportIcon" Width="24" Height="24" Margin="0,0,11,0" />
+            <Image x:Name="SupportIcon" Width="20" Height="20" Margin="0,0,11,0" />
             <TextBlock Text="Поддержка" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" FontSize="14" VerticalAlignment="Center" />
           </StackPanel>
         </Button>
         <Button x:Name="Source" Style="{StaticResource Nav}" AutomationProperties.Name="Исходный код">
           <StackPanel Orientation="Horizontal">
-            <Image x:Name="SourceIcon" Width="24" Height="24" Margin="0,0,11,0" />
+            <Image x:Name="SourceIcon" Width="20" Height="20" Margin="0,0,11,0" />
             <TextBlock Text="Исходный код" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" FontSize="14" VerticalAlignment="Center" />
           </StackPanel>
         </Button>
@@ -64,7 +64,7 @@
           <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
         <Image x:Name="DownloadStatsIcon" Width="20" Height="20" Margin="0,0,9,0" />
-        <TextBlock Text="Всего скачало" Grid.Column="1" FontSize="13" LineHeight="22" VerticalAlignment="Center" />
+        <TextBlock Text="Скачиваний" Grid.Column="1" FontSize="13" LineHeight="22" VerticalAlignment="Center" />
         <Border Grid.Column="2" Background="{DynamicResource Line}" Width="1" Height="18" Margin="14,0" />
         <TextBlock x:Name="DownloadCount" Text="Нет данных" Grid.Column="3" FontSize="16" FontWeight="SemiBold" LineHeight="22" VerticalAlignment="Center" />
       </Grid>
@@ -91,11 +91,11 @@
                 <TextBlock x:Name="FoundCount" Foreground="{DynamicResource Muted}" FontSize="12" VerticalAlignment="Center" />
                 <Button x:Name="Rescan" Content="Найти снова" Style="{StaticResource Quiet}" HorizontalAlignment="Right" Padding="8,4" MinHeight="32" />
               </Grid>
-              <ListBox x:Name="Games" AutomationProperties.Name="Найденные сборки Minecraft" Background="Transparent" BorderThickness="0" MaxHeight="220" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+              <ListBox x:Name="Games" AutomationProperties.Name="Найденные сборки Minecraft" Background="Transparent" BorderThickness="0" MaxHeight="280" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                 <ListBox.ItemTemplate>
                   <DataTemplate>
                     <StackPanel>
-                      <TextBlock Text="{Binding DisplayName}" FontWeight="SemiBold" FontSize="15" />
+                      <TextBlock Foreground="{DynamicResource Text}" Text="{Binding DisplayName}" FontWeight="SemiBold" FontSize="15" />
                       <TextBlock Text="{Binding GameDirectory}" FontSize="12" Foreground="{DynamicResource Muted}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,5,0,0" ToolTip="{Binding GameDirectory}" />
                     </StackPanel>
                   </DataTemplate>
@@ -108,8 +108,9 @@
             <StackPanel x:Name="LocatePage" Visibility="Collapsed">
               <TextBlock Text="Через сам Minecraft" Style="{StaticResource Section}" Margin="0,0,0,8" />
               <TextBlock Text="1. Открой Настройки → Наборы ресурсов → Открыть папку.&#10;2. Скопируй адрес папки из строки проводника (Ctrl + L, Ctrl + C).&#10;3. Вставь адрес сюда. Подойдёт и сама папка resourcepacks." Style="{StaticResource Body}" />
-              <TextBox x:Name="FolderInput" Margin="0,16,0,8" AutomationProperties.Name="Путь к папке Minecraft" ToolTip="Путь к игре, resourcepacks, logs или latest.log" />
-              <Button x:Name="UsePath" Content="Использовать этот путь" Style="{StaticResource Secondary}" HorizontalAlignment="Left" />
+              <TextBlock x:Name="FolderLabel" Text="Путь к папке игры" Style="{StaticResource Body}" Margin="0,16,0,0" />
+              <TextBox x:Name="FolderInput" Margin="0,6,0,8" AutomationProperties.Name="Путь к папке Minecraft" ToolTip="Путь к игре, resourcepacks, logs или latest.log" />
+              <Button x:Name="UsePath" Content="Использовать этот путь" Style="{StaticResource Primary}" HorizontalAlignment="Left" />
               <TextBlock Text="Или выбери через проводник" Style="{StaticResource Section}" />
               <WrapPanel>
                 <Button x:Name="BrowseFolder" Content="Выбрать папку" Style="{StaticResource Secondary}" Margin="0,0,8,8" />
@@ -135,7 +136,7 @@
               <TextBlock Text="Prism / MultiMC" Style="{StaticResource Section}" />
               <TextBox Text="%AppData%\PrismLauncher\instances\ИМЯ_СБОРКИ\.minecraft\logs\latest.log" IsReadOnly="True" TextWrapping="Wrap" />
               <TextBlock Text="В Modrinth, TLauncher и других лаунчерах открой папку выбранной сборки через сам лаунчер, затем logs. После установки используй тот же аккаунт и адрес lavabox.fun." Style="{StaticResource Body}" FontSize="12" Margin="0,16,0,0" />
-              <Button x:Name="BrowseLog" Content="Выбрать latest.log" Style="{StaticResource Secondary}" HorizontalAlignment="Left" Margin="0,18,0,0" />
+              <Button x:Name="BrowseLog" Content="Выбрать latest.log" Style="{StaticResource Primary}" HorizontalAlignment="Left" Margin="0,18,0,0" />
               <TextBlock Text="Если сборка уже выбрана, кнопка сразу откроет её logs. Файл также можно перетащить в окно." Style="{StaticResource Body}" FontSize="12" />
             </StackPanel>
             <StackPanel x:Name="PreparePage" Visibility="Collapsed">
@@ -155,21 +156,13 @@
                 </StackPanel>
                 <Image x:Name="StateIcon" Grid.Column="1" Width="22" Height="22" Margin="14,0,0,0" />
               </Grid>
-              <Grid x:Name="GameClosedRow" Margin="0,17,0,0">
-                <Grid.ColumnDefinitions>
-                  <ColumnDefinition Width="20" />
-                  <ColumnDefinition />
-                </Grid.ColumnDefinitions>
-                <CheckBox x:Name="GameClosed" AutomationProperties.Name="Minecraft полностью закрыт" Margin="0,2,0,0" VerticalAlignment="Top" HorizontalAlignment="Left">
-              </CheckBox>
-                <TextBlock Text="Minecraft полностью закрыт.&#10;Лаунчер можно оставить открытым." x:Name="GameClosedLabel" Grid.Column="1" Margin="12,0,0,0" LineHeight="22" IsHitTestVisible="False" />
-              </Grid>
+
             </StackPanel>
             <StackPanel x:Name="DonePage" Visibility="Collapsed">
               <Image x:Name="DoneIcon" Width="38" Height="38" HorizontalAlignment="Left" Margin="0,0,0,18" />
               <TextBlock Text="Пак установлен и проверен" FontSize="18" FontWeight="SemiBold" />
               <TextBlock Text="Теперь запусти свою сборку, зайди на сервер и разреши серверный ресурспак. Minecraft применит его из кэша." Style="{StaticResource Body}" />
-              <Button x:Name="CopyServer" Content="Скопировать lavabox.fun" Style="{StaticResource Secondary}" HorizontalAlignment="Left" Margin="0,22,0,16" />
+              <Button x:Name="CopyServer" Content="Скопировать lavabox.fun" Style="{StaticResource Primary}" HorizontalAlignment="Left" Margin="0,22,0,16" />
               <TextBlock Text="Вручную добавлять ZIP в список ресурспаков не нужно. Если сервер всё ещё сообщает об ошибке, открой помощь." Style="{StaticResource Body}" FontSize="12" />
               <Button x:Name="DoneHelp" Content="Сервер всё ещё не пускает" Style="{StaticResource Quiet}" HorizontalAlignment="Left" Padding="0,9" Margin="0,8,0,0" />
               <TextBlock x:Name="CacheCleanupNote" Style="{StaticResource Body}" FontSize="12" Visibility="Collapsed" Margin="0,12,0,0" />
@@ -177,8 +170,8 @@
             <StackPanel x:Name="UpdatesPage" Visibility="Collapsed">
               <TextBlock x:Name="LocalVersions" FontSize="16" FontWeight="SemiBold" />
               <TextBlock Text="Проверим версию приложения и ресурспак в выбранной сборке." Style="{StaticResource Body}" />
-              <Button x:Name="CheckUpdates" Content="Проверить обновления" Style="{StaticResource Secondary}" HorizontalAlignment="Left" Margin="0,20,0,0" MinWidth="210" />
-              <ui:CrispBorder x:Name="UpdatePanel" Background="{DynamicResource Surface}" CornerRadius="8" Padding="19" Margin="0,23,0,0" Visibility="Collapsed">
+              <Button x:Name="CheckUpdates" Content="Проверить обновления" Style="{StaticResource Primary}" HorizontalAlignment="Left" Margin="0,20,0,0" MinWidth="210" />
+              <ui:CrispBorder x:Name="UpdatePanel" BorderBrush="{DynamicResource Line}" BorderThickness="0,1,0,0" Padding="0,20,0,0" Margin="0,23,0,0" Visibility="Collapsed">
                 <StackPanel>
                   <TextBlock x:Name="UpdateTitle" FontWeight="SemiBold" FontSize="15" />
                   <TextBlock x:Name="UpdateDetail" Style="{StaticResource Body}" FontSize="13" />
@@ -192,13 +185,13 @@
               <TextBlock Text="1. Полностью закрой Minecraft.&#10;2. Выбери в PackHelper ту сборку, из которой заходишь.&#10;3. Проверь обновления и установи пак ещё раз.&#10;4. Зайди на lavabox.fun и разреши серверный пак." Style="{StaticResource Body}" />
               <WrapPanel Margin="0,14,0,0">
                 <Button x:Name="HelpChoose" Content="Выбрать сборку" Style="{StaticResource Secondary}" Margin="0,0,8,8" />
-                <Button x:Name="HelpUpdates" Content="Открыть обновления" Style="{StaticResource Secondary}" Margin="0,0,0,8" />
+                <Button x:Name="HelpUpdates" Content="Открыть обновления" Style="{StaticResource Quiet}" Margin="0,0,0,8" />
               </WrapPanel>
               <TextBlock Text="Если используешь OpSec" Style="{StaticResource Section}" />
               <TextBlock Text="1. Попробуй зайти на сервер, затем закрой Minecraft.&#10;2. Открой папку своей сборки и найди logs/latest.log.&#10;3. Нажми «Найти latest.log» ниже и выбери файл по инструкции." Style="{StaticResource Body}" />
               <TextBox Text="Обычно: %AppData%\.minecraft\logs\latest.log" IsReadOnly="True" TextWrapping="Wrap" Margin="0,14,0,8" />
               <WrapPanel>
-                <Button x:Name="HelpLog" Content="Найти latest.log" Style="{StaticResource Secondary}" Margin="0,0,8,8" />
+                <Button x:Name="HelpLog" Content="Найти latest.log" Style="{StaticResource Quiet}" Margin="0,0,8,8" />
                 <Button x:Name="HelpLocate" Content="Где папка игры?" Style="{StaticResource Quiet}" Margin="0,0,0,8" />
               </WrapPanel>
               <TextBlock Text="Ошибка осталась?" Style="{StaticResource Section}" />
@@ -208,13 +201,13 @@
             <StackPanel x:Name="SupportPage" Visibility="Collapsed">
               <TextBlock Text="Напиши, на каком шаге возникла проблема и что показал Minecraft или PackHelper." Style="{StaticResource Body}" Margin="0,0,0,16" />
               <WrapPanel>
-                <Button x:Name="Telegram" AutomationProperties.Name="Написать разработчику" Style="{StaticResource Secondary}" Margin="0,0,8,8">
+                <Button x:Name="Telegram" AutomationProperties.Name="Написать разработчику" Style="{StaticResource Quiet}" Margin="0,0,8,8">
                   <StackPanel Orientation="Horizontal">
                     <Image x:Name="TelegramIcon" Width="24" Height="24" Margin="0,0,9,0" />
                     <TextBlock Text="Написать разработчику" FontSize="14" VerticalAlignment="Center" />
                   </StackPanel>
                 </Button>
-                <Button x:Name="Discord" AutomationProperties.Name="Discord сервера" Style="{StaticResource Secondary}" Margin="0,0,8,8">
+                <Button x:Name="Discord" AutomationProperties.Name="Discord сервера" Style="{StaticResource Quiet}" Margin="0,0,8,8">
                   <StackPanel Orientation="Horizontal">
                     <Image x:Name="DiscordIcon" Width="24" Height="24" Margin="0,0,9,0" />
                     <TextBlock Text="Discord сервера" FontSize="14" VerticalAlignment="Center" />
@@ -226,7 +219,7 @@
               <TextBox x:Name="Diagnostics" IsReadOnly="True" TextWrapping="Wrap" Margin="0,15,0,10" />
               <WrapPanel>
                 <Button x:Name="CopyDiagnostics" Content="Скопировать сведения" Style="{StaticResource Secondary}" Margin="0,0,8,8" />
-                <Button x:Name="ReportBug" Content="Создать отчёт на GitHub" Style="{StaticResource Secondary}" Margin="0,0,0,8" />
+                <Button x:Name="ReportBug" Content="Сообщить об ошибке" Style="{StaticResource Quiet}" Margin="0,0,0,8" />
               </WrapPanel>
             </StackPanel>
           </Grid>
@@ -236,16 +229,22 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
           </Grid.RowDefinitions>
-          <ProgressBar x:Name="Progress" Visibility="Collapsed" Height="3" Foreground="{DynamicResource Accent}" Background="{DynamicResource Surface}" IsIndeterminate="True" Margin="0,0,0,10" />
-          <TextBlock x:Name="Status" Grid.Row="1" Foreground="{DynamicResource Muted}" FontSize="12" Margin="0,0,0,10" Visibility="Collapsed" AutomationProperties.LiveSetting="Polite" />
-          <Grid Grid.Row="2">
+              <Grid x:Name="GameClosedRow" Margin="0,0,0,12" Visibility="Collapsed">
+                <CheckBox x:Name="GameClosed" AutomationProperties.Name="Minecraft полностью закрыт">
+                  <TextBlock Text="Minecraft полностью закрыт.&#10;Лаунчер можно оставить открытым." x:Name="GameClosedLabel" LineHeight="22" />
+                </CheckBox>
+              </Grid>
+          <ProgressBar Grid.Row="1" x:Name="Progress" Visibility="Collapsed" Height="3" Foreground="{DynamicResource Accent}" Background="{DynamicResource Surface}" IsIndeterminate="True" Margin="0,0,0,10" />
+          <TextBlock x:Name="Status" Grid.Row="2" Foreground="{DynamicResource Muted}" FontSize="12" Margin="0,0,0,10" Visibility="Collapsed" AutomationProperties.LiveSetting="Polite" />
+          <Grid Grid.Row="3">
             <Grid.ColumnDefinitions>
               <ColumnDefinition Width="Auto" />
               <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <Button x:Name="Back" Grid.Column="0" Content="Назад" Style="{StaticResource Quiet}" Margin="0,0,8,0" />
-            <Button x:Name="InstallPack" Grid.Column="1" Style="{StaticResource Primary}" MinHeight="49">
+            <Button x:Name="InstallPack" Grid.Column="1" Style="{StaticResource Primary}" MinHeight="46" MinWidth="180" HorizontalAlignment="Right">
               <TextBlock x:Name="InstallLabel" Text="Продолжить" Foreground="#2D170C" FontWeight="SemiBold" />
             </Button>
           </Grid>
