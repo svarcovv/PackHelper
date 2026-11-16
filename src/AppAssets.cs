@@ -8,8 +8,7 @@ namespace LavaBox.PackHelper
 {
     public static class AppAssets
     {
-        public static FontFamily Typeface
-        {get{return new FontFamily(new Uri("pack://application:,,,/"),"/"+Assembly.GetExecutingAssembly().GetName().Name+";component/assets/fonts/#Manrope");}}
+        public static FontFamily Typeface { get { return new FontFamily("Segoe UI"); } }
         public static ImageSource Icon
         {
             get

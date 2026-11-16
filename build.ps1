@@ -1,7 +1,7 @@
 ﻿param(
     [Parameter(Mandatory=$true)][string]$PackPath,
     [Parameter(Mandatory=$true)][ValidatePattern('^[0-9]+\.[0-9]+\.[0-9]+$')][string]$PackVersion,
-    [ValidatePattern('^[0-9]{1,4}\.[0-9]{1,4}\.[0-9]{1,4}$')][string]$AppVersion = '1.2.0',
+    [ValidatePattern('^[0-9]{1,4}\.[0-9]{1,4}\.[0-9]{1,4}$')][string]$AppVersion = '1.3.0',
     [string]$PackId = '4e7502b2-1883-44d9-a2b4-03cfd5884e13',
     [string]$SourceUrl = 'https://github.com/svarcovv/PackHelper',
     [string]$OutputDirectory = (Join-Path $PSScriptRoot 'dist')
@@ -45,16 +45,12 @@ New-Item -ItemType Directory -Path $build -Force | Out-Null
 $versionFile = Join-Path $build 'BuildVersion.cs'
 [IO.File]::WriteAllText($versionFile, "[assembly: System.Reflection.AssemblyVersion(`"$AppVersion.0`")]`n[assembly: System.Reflection.AssemblyFileVersion(`"$AppVersion.0`")]`n", $utf8)
 $framework = Split-Path -Parent $compiler
-$fontResources = Join-Path $build 'fonts.resources'
-$fontWriter = New-Object System.Resources.ResourceWriter($fontResources)
-try { foreach($font in (Get-ChildItem -LiteralPath (Join-Path $PSScriptRoot 'assets\fonts') -Filter '*.ttf')) { $fontWriter.AddResource('assets/fonts/'+$font.Name.ToLowerInvariant(), (New-Object IO.MemoryStream(,[IO.File]::ReadAllBytes($font.FullName)))) } } finally { $fontWriter.Close() }
 $arguments = @('/nologo','/target:winexe','/platform:anycpu','/optimize+','/codepage:65001',
     '/r:System.Windows.Forms.dll','/r:System.Management.dll','/r:System.Web.Extensions.dll','/r:System.Net.Http.dll','/r:System.Xml.Linq.dll',
     "/r:$framework\WPF\PresentationCore.dll", "/r:$framework\WPF\PresentationFramework.dll", "/r:$framework\WPF\WindowsBase.dll", '/r:System.Xaml.dll',
     "/out:$executable", "/win32icon:$(Join-Path $PSScriptRoot 'assets\packhelper.ico')", "/win32manifest:$(Join-Path $PSScriptRoot 'app.manifest')", "/resource:$pack,LavaBox.Pack.zip", "/resource:$manifestPath,LavaBox.Release.json", "/resource:$(Join-Path $PSScriptRoot 'src\Window.xaml'),PackHelper.Window.xaml") + $sources + $versionFile
 $arguments += "/resource:$(Join-Path $PSScriptRoot 'src\Theme.xaml'),PackHelper.Theme.xaml"
 $arguments += "/resource:$(Join-Path $PSScriptRoot 'assets\packhelper.ico'),PackHelper.App.ico"
-$arguments += "/resource:$fontResources,$([IO.Path]::GetFileNameWithoutExtension($executable)).g.resources"
 foreach($icon in (Get-ChildItem -LiteralPath (Join-Path $PSScriptRoot 'assets\icons') -File)) {
     $resource = if($icon.Extension -eq '.svg') { 'PackHelper.Icons.'+$icon.Name } else { 'PackHelper.Licenses.'+$icon.Name }
     $arguments += "/resource:$($icon.FullName),$resource"

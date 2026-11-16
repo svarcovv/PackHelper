@@ -33,7 +33,11 @@ namespace LavaBox.PackHelper
             bool steps=target=="Choose"||target=="Prepare"||target=="Done";Element<StackPanel>("Steps").Visibility=steps?Visibility.Visible:Visibility.Collapsed;
             foreach(string name in new[]{"Choose","Prepare","Done"})Element<TextBlock>("Step"+name).Foreground=Brush(name==target?"Accent":"Muted");
             string active=target=="Support"?"Support":target=="Updates"?"NavUpdates":target=="Help"?"NavHelp":"NavInstall";
-            foreach(string name in new[]{"NavInstall","NavUpdates","NavHelp","Support"}){var b=Element<Button>(name);b.Background=Brush(name==active?"Surface":"Sidebar");b.Foreground=Brush(name==active?"Text":"Muted");}
+            foreach(string name in new[]{"NavInstall","NavUpdates","NavHelp","Support"})
+            {
+                var b=Element<Button>(name);b.Background=Brush(name==active?"Tint":"Sidebar");b.Foreground=Brush(name==active?"Accent":"Muted");
+                if(name.StartsWith("Nav",StringComparison.Ordinal))Element<Image>(name+"Icon").Source=Icons.Read(name=="NavInstall"?"download":name=="NavUpdates"?"refresh":"info",Brush(name==active?"Accent":"Muted"));
+            }
             Element<Button>("Back").Visibility=target=="Choose"||target=="Updates"?Visibility.Collapsed:Visibility.Visible;
             Element<ScrollViewer>("PageScroll").ScrollToTop();Message("",false);RefreshActions();
             if(target=="Support")Element<TextBox>("Diagnostics").Text="PackHelper "+release.appVersion+"\nLavaResurs "+release.packVersion+"\nСборка: "+(Selected==null?"не выбрана":Selected.NeedsCacheEvidence?"нужен лог":Selected.Isolated?"изолированный кэш":"обычный кэш")+"\nПак: "+Element<TextBlock>("PackState").Text;

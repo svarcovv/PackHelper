@@ -63,6 +63,7 @@ namespace LavaBox.PackHelper
             Loaded+=async delegate{await Scan();if(initialFolder!=null)await ImportPath(initialFolder);};
             Closing+=delegate(object sender,System.ComponentModel.CancelEventArgs e){if(busy&&!quitting)e.Cancel=true;};
             PreviewKeyDown+=delegate{keyboardNavigation=true;};PreviewMouseDown+=delegate{keyboardNavigation=false;};
+            foreach(string icon in new[]{"NavInstall:download","NavUpdates:refresh","NavHelp:info"}){var pair=icon.Split(':');Element<Image>(pair[0]+"Icon").Source=Icons.Read(pair[1],Brush("Accent"));}
             ConfigureMotion();Navigate("Choose",false);
         }
         private static System.IO.Stream Resource(string name){return Assembly.GetExecutingAssembly().GetManifestResourceStream("PackHelper."+name);}
@@ -70,7 +71,7 @@ namespace LavaBox.PackHelper
         private Brush Brush(string key){return (Brush)Resources[key];}
         private GameCandidate Selected{get{return games.SelectedItem as GameCandidate;}}
         private void Bind(string name,Action action){Element<Button>(name).Click+=delegate{if(!busy)action();};}
-        private void Message(string text,bool error){status.Text=text;status.Foreground=Brush(error?"Danger":"Muted");}
+        private void Message(string text,bool error){status.Text=text;status.Visibility=String.IsNullOrEmpty(text)?Visibility.Collapsed:Visibility.Visible;status.Foreground=Brush(error?"Danger":"Muted");}
         private void Copy(string text,string confirmation){try{Clipboard.SetText(text);Message(confirmation,false);}catch(ExternalException){Message("Буфер обмена занят. Попробуй ещё раз.",true);}}
         private void SetBusy(bool value)
         {

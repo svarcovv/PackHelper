@@ -34,9 +34,6 @@ namespace PackHelperBuilder
             var utf8=new UTF8Encoding(false);
             File.WriteAllText(manifest,json.Serialize(new{appVersion=appVersion,packVersion=packVersion,packId=id,sha1=sha1,sha256=sha256,size=new FileInfo(pack).Length,server="lavabox.fun",sourceUrl="https://github.com/svarcovv/PackHelper",discordUrl="https://discord.gg/xMBKSnDvt"}),utf8);
             string version=Path.Combine(build,"BuildVersion.cs");
-            string fonts=Path.Combine(build,"fonts.resources");
-            using(var writer=new System.Resources.ResourceWriter(fonts))
-                foreach(string font in Directory.GetFiles(Path.Combine(root,"assets","fonts"),"*.ttf"))writer.AddResource("assets/fonts/"+Path.GetFileName(font).ToLowerInvariant(),new MemoryStream(File.ReadAllBytes(font)));
             File.WriteAllText(version,"[assembly: System.Reflection.AssemblyVersion(\""+appVersion+".0\")]\n[assembly: System.Reflection.AssemblyFileVersion(\""+appVersion+".0\")]",utf8);
             string framework=Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows),"Microsoft.NET",Environment.Is64BitOperatingSystem?"Framework64":"Framework","v4.0.30319");
             string compiler=Path.Combine(framework,"csc.exe");if(!File.Exists(compiler))throw new Exception("Не найден компилятор .NET Framework.");
@@ -44,7 +41,6 @@ namespace PackHelperBuilder
                 "/out:"+exe,"/win32icon:"+Path.Combine(root,"assets","packhelper.ico"),"/win32manifest:"+Path.Combine(root,"app.manifest"),"/resource:"+pack+",LavaBox.Pack.zip","/resource:"+manifest+",LavaBox.Release.json","/resource:"+Path.Combine(root,"src","Window.xaml")+",PackHelper.Window.xaml"};
             foreach(string dll in new[]{"PresentationCore.dll","PresentationFramework.dll","WindowsBase.dll"})args.Add("/r:"+Path.Combine(framework,"WPF",dll));
             args.AddRange(Directory.GetFiles(Path.Combine(root,"src"),"*.cs"));args.Add(version);
-            args.Add("/resource:"+fonts+","+Path.GetFileNameWithoutExtension(exe)+".g.resources");
             args.Add("/resource:"+Path.Combine(root,"src","Theme.xaml")+",PackHelper.Theme.xaml");
             args.Add("/resource:"+Path.Combine(root,"assets","packhelper.ico")+",PackHelper.App.ico");
             foreach(string icon in Directory.GetFiles(Path.Combine(root,"assets","icons")))args.Add("/resource:"+icon+","+(Path.GetExtension(icon)==".svg"?"PackHelper.Icons.":"PackHelper.Licenses.")+Path.GetFileName(icon));
