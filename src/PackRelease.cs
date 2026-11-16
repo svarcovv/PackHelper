@@ -22,6 +22,7 @@ namespace LavaBox.PackHelper
         public string server = "lavabox.fun";
         public string sourceUrl = "https://github.com/svarcovv/PackHelper";
         public string discordUrl = "https://discord.gg/xMBKSnDvt";
+        public string developerUrl = "https://t.me/AntiDoDmiGEI";
 
         public void Validate()
         {

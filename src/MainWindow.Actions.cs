@@ -23,22 +23,27 @@ namespace LavaBox.PackHelper
         }
         private async Task Scan()
         {
-            var selected=Selected;SetBusy(true);Message("Ищем сборки…",false);
+            if(scanning||busy)return;var selected=Selected;scanning=true;rescan.IsEnabled=false;RefreshActions();
+            progress.IsIndeterminate=true;progress.Visibility=Visibility.Visible;Message("Ищем сборки…",false);
             try
             {
-                var found=demoFolder==null?await Task.Run(()=>GameDiscovery.Scan(release)):new List<GameCandidate>{GameDiscovery.Candidate(demoFolder,release)};
-                games.ItemsSource=found;games.SelectedItem=selected==null?null:found.FirstOrDefault(c=>c.GameDirectory.Equals(selected.GameDirectory,StringComparison.OrdinalIgnoreCase));
-                if(games.SelectedItem==null&&found.Count==1)games.SelectedIndex=0;
+                var found=await Task.Run(()=>demoFolder==null?GameDiscovery.Scan(release):new List<GameCandidate>{GameDiscovery.Candidate(demoFolder,release)});
+                var keep=Selected??selected;
+                if(keep!=null&&!found.Any(c=>c.GameDirectory.Equals(keep.GameDirectory,StringComparison.OrdinalIgnoreCase))&&PackPaths.LooksLikeGame(keep.GameDirectory))found.Add(keep);
+                var previous=(games.ItemsSource as IEnumerable<GameCandidate>??new GameCandidate[0]).ToArray();
+                bool same=previous.Length==found.Count&&previous.Zip(found,(a,b)=>a.GameDirectory.Equals(b.GameDirectory,StringComparison.OrdinalIgnoreCase)&&a.CacheDirectory.Equals(b.CacheDirectory,StringComparison.OrdinalIgnoreCase)&&a.NeedsCacheEvidence==b.NeedsCacheEvidence).All(equal=>equal);
+                if(!same)
+                {games.ItemsSource=found;games.SelectedItem=keep==null?null:found.FirstOrDefault(c=>c.GameDirectory.Equals(keep.GameDirectory,StringComparison.OrdinalIgnoreCase));if(games.SelectedItem==null&&found.Count==1)games.SelectedIndex=0;}
                 Element<TextBlock>("FoundCount").Text=found.Count==0?"Сборки не найдены":"Найдено сборок: "+found.Count;
                 Element<TextBlock>("NoGames").Visibility=found.Count==0?Visibility.Visible:Visibility.Collapsed;Message("",false);
             }
             catch(Exception){Message("Не удалось завершить поиск. Выбери папку вручную.",true);}
-            finally{SetBusy(false);}await ShowCandidate();
+            finally{scanning=false;rescan.IsEnabled=!busy;progress.Visibility=busy?Visibility.Visible:Visibility.Collapsed;RefreshActions();}await ShowCandidate();
         }
         private async void ChooseFolder()
         {using(var picker=new System.Windows.Forms.FolderBrowserDialog{Description="Папка игры, resourcepacks или logs",ShowNewFolderButton=false,SelectedPath=Selected==null?Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData):Selected.GameDirectory})if(picker.ShowDialog()==System.Windows.Forms.DialogResult.OK)await ImportPath(picker.SelectedPath);}
         private async void ChooseLog()
-        {var picker=new Microsoft.Win32.OpenFileDialog{Title="Выбери latest.log своей сборки",Filter="Логи Minecraft (*.log)|*.log",FileName="latest.log",CheckFileExists=true,InitialDirectory=Selected==null?Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData):Path.Combine(Selected.GameDirectory,"logs")};if(picker.ShowDialog(this)==true)await ImportPath(picker.FileName);}
+        {string initial=Selected==null?Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),".minecraft","logs"):Path.Combine(Selected.GameDirectory,"logs");if(!Directory.Exists(initial))initial=Selected==null?Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData):Selected.GameDirectory;var picker=new Microsoft.Win32.OpenFileDialog{Title="Выбери latest.log своей сборки",Filter="Логи Minecraft (*.log)|*.log",FileName="latest.log",CheckFileExists=true,InitialDirectory=initial};if(picker.ShowDialog(this)==true)await ImportPath(picker.FileName);}
         private async Task ImportPath(string value)
         {
             if(busy)return;
@@ -65,7 +70,10 @@ namespace LavaBox.PackHelper
             try
             {
                 if(demoFolder==null){var running=await Task.Run(()=>GameDiscovery.RunningGameDirectories());if(running.Any(p=>p.Equals(game.GameDirectory,StringComparison.OrdinalIgnoreCase)))throw new IOException("Minecraft ещё запущен. Полностью закрой игру и повтори установку.");}
-                await Task.Run(()=>PackInstall.Install(game,release,PackInstall.EmbeddedPack));await ShowCandidate();success=true;
+                var result=await Task.Run(()=>PackInstall.Install(game,release,PackInstall.EmbeddedPack));await ShowCandidate();success=true;
+                var cleanup=Element<TextBlock>("CacheCleanupNote");cleanup.Text=result.Cleanup.RemovedFiles>0?"Убрано старых файлов пака: "+result.Cleanup.RemovedFiles+" ("+(result.Cleanup.RemovedBytes/1048576.0).ToString("0.0")+" МБ).":"";
+                if(result.Cleanup.Incomplete)cleanup.Text+=" Часть старых файлов занята. Новый пак установлен.";
+                cleanup.Visibility=String.IsNullOrEmpty(cleanup.Text)?Visibility.Collapsed:Visibility.Visible;
             }
             catch(Exception error){Message("Установка не завершена. "+error.Message,true);}
             finally{SetBusy(false);}if(success)Navigate("Done");

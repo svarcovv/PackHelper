@@ -16,6 +16,7 @@ namespace LavaBox.PackHelper
         public string Path;
         public bool AlreadyPresent;
         public string BackupPath;
+        public CleanupResult Cleanup;
     }
 
     public static class PackInstall
@@ -34,7 +35,7 @@ namespace LavaBox.PackHelper
             string nativeDestination = PackPaths.Native(destination);
             if (File.Exists(nativeDestination) && new FileInfo(nativeDestination).Length == release.size &&
                 Hash(destination, true) == release.sha256 && Hash(destination, false) == release.sha1)
-                return new InstallResult { Path = destination, AlreadyPresent = true };
+                return Finish(candidate,release,new InstallResult { Path = destination, AlreadyPresent = true });
             string parent = Path.GetDirectoryName(destination);
             Directory.CreateDirectory(PackPaths.Native(parent));
             PackPaths.RejectLinks(destination);
@@ -66,11 +67,13 @@ namespace LavaBox.PackHelper
                     File.Replace(nativeTemporary, nativeDestination, PackPaths.Native(backup));
                 }
                 else File.Move(nativeTemporary, nativeDestination);
-                return new InstallResult { Path = destination, AlreadyPresent = false, BackupPath = backup };
+                return Finish(candidate,release,new InstallResult { Path = destination, AlreadyPresent = false, BackupPath = backup });
             }
             finally { if (File.Exists(nativeTemporary)) File.Delete(nativeTemporary); }
         }
 
         public static Stream EmbeddedPack()
         { return Assembly.GetExecutingAssembly().GetManifestResourceStream("LavaBox.Pack.zip"); }
+        private static InstallResult Finish(GameCandidate game,PackRelease release,InstallResult result)
+        {result.Cleanup=CacheCleanup.Prune(game,release);return result;}
     }}

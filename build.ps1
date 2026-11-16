@@ -1,7 +1,7 @@
 ﻿param(
     [Parameter(Mandatory=$true)][string]$PackPath,
     [Parameter(Mandatory=$true)][ValidatePattern('^[0-9]+\.[0-9]+\.[0-9]+$')][string]$PackVersion,
-    [ValidatePattern('^[0-9]{1,4}\.[0-9]{1,4}\.[0-9]{1,4}$')][string]$AppVersion = '1.3.0',
+    [ValidatePattern('^[0-9]{1,4}\.[0-9]{1,4}\.[0-9]{1,4}$')][string]$AppVersion = '1.4.0',
     [string]$PackId = '4e7502b2-1883-44d9-a2b4-03cfd5884e13',
     [string]$SourceUrl = 'https://github.com/svarcovv/PackHelper',
     [string]$OutputDirectory = (Join-Path $PSScriptRoot 'dist')
@@ -29,6 +29,7 @@ $manifest = [ordered]@{
     server = 'lavabox.fun'
     sourceUrl = $SourceUrl
     discordUrl = 'https://discord.gg/xMBKSnDvt'
+    developerUrl = 'https://t.me/AntiDoDmiGEI'
 }
 New-Item -ItemType Directory -Path $OutputDirectory -Force | Out-Null
 $output = (Resolve-Path -LiteralPath $OutputDirectory).Path
@@ -51,6 +52,7 @@ $arguments = @('/nologo','/target:winexe','/platform:anycpu','/optimize+','/code
     "/out:$executable", "/win32icon:$(Join-Path $PSScriptRoot 'assets\packhelper.ico')", "/win32manifest:$(Join-Path $PSScriptRoot 'app.manifest')", "/resource:$pack,LavaBox.Pack.zip", "/resource:$manifestPath,LavaBox.Release.json", "/resource:$(Join-Path $PSScriptRoot 'src\Window.xaml'),PackHelper.Window.xaml") + $sources + $versionFile
 $arguments += "/resource:$(Join-Path $PSScriptRoot 'src\Theme.xaml'),PackHelper.Theme.xaml"
 $arguments += "/resource:$(Join-Path $PSScriptRoot 'assets\packhelper.ico'),PackHelper.App.ico"
+$arguments += "/resource:$(Join-Path $PSScriptRoot 'assets\packhelper.svg'),PackHelper.App.svg"
 foreach($icon in (Get-ChildItem -LiteralPath (Join-Path $PSScriptRoot 'assets\icons') -File)) {
     $resource = if($icon.Extension -eq '.svg') { 'PackHelper.Icons.'+$icon.Name } else { 'PackHelper.Licenses.'+$icon.Name }
     $arguments += "/resource:$($icon.FullName),$resource"

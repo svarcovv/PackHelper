@@ -5,7 +5,7 @@ $work = (Resolve-Path -LiteralPath $WorkDirectory).Path
 $compiler = Join-Path $env:WINDIR 'Microsoft.NET\Framework64\v4.0.30319\csc.exe'
 if (!(Test-Path -LiteralPath $compiler)) { $compiler = Join-Path $env:WINDIR 'Microsoft.NET\Framework\v4.0.30319\csc.exe' }
 $test = Join-Path $work 'CoreTests.exe'
-$sources = @(Get-ChildItem -LiteralPath (Join-Path $PSScriptRoot 'src') -Filter '*.cs' | Where-Object { $_.Name -notmatch '^(Program|MainWindow|Icons|AppAssets|DemoRecorder)' } | ForEach-Object FullName)
+$sources = @(Get-ChildItem -LiteralPath (Join-Path $PSScriptRoot 'src') -Filter '*.cs' | Where-Object { $_.Name -notmatch '^(Program|MainWindow|Icons|AppAssets|CrispBorder|DemoRecorder)' } | ForEach-Object FullName)
 $testSources = @(Get-ChildItem -LiteralPath (Join-Path $PSScriptRoot 'tests') -Filter '*.cs' | ForEach-Object FullName)
 $arguments = @('/nologo','/target:exe','/codepage:65001','/r:System.Management.dll','/r:System.Web.Extensions.dll','/r:System.Net.Http.dll', "/out:$test", "/win32manifest:$(Join-Path $PSScriptRoot 'app.manifest')") + $sources + $testSources
 & $compiler @arguments

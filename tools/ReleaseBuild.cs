@@ -32,7 +32,7 @@ namespace PackHelperBuilder
             string id="4e7502b2-1883-44d9-a2b4-03cfd5884e13",sha1=Hash(pack,"SHA1"),sha256=Hash(pack,"SHA256");
             string manifest=Path.Combine(output,"pack-release.json"),exe=Path.Combine(output,"PackHelper-"+appVersion+".exe");
             var utf8=new UTF8Encoding(false);
-            File.WriteAllText(manifest,json.Serialize(new{appVersion=appVersion,packVersion=packVersion,packId=id,sha1=sha1,sha256=sha256,size=new FileInfo(pack).Length,server="lavabox.fun",sourceUrl="https://github.com/svarcovv/PackHelper",discordUrl="https://discord.gg/xMBKSnDvt"}),utf8);
+            File.WriteAllText(manifest,json.Serialize(new{appVersion=appVersion,packVersion=packVersion,packId=id,sha1=sha1,sha256=sha256,size=new FileInfo(pack).Length,server="lavabox.fun",sourceUrl="https://github.com/svarcovv/PackHelper",discordUrl="https://discord.gg/xMBKSnDvt",developerUrl="https://t.me/AntiDoDmiGEI"}),utf8);
             string version=Path.Combine(build,"BuildVersion.cs");
             File.WriteAllText(version,"[assembly: System.Reflection.AssemblyVersion(\""+appVersion+".0\")]\n[assembly: System.Reflection.AssemblyFileVersion(\""+appVersion+".0\")]",utf8);
             string framework=Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows),"Microsoft.NET",Environment.Is64BitOperatingSystem?"Framework64":"Framework","v4.0.30319");
@@ -43,6 +43,7 @@ namespace PackHelperBuilder
             args.AddRange(Directory.GetFiles(Path.Combine(root,"src"),"*.cs"));args.Add(version);
             args.Add("/resource:"+Path.Combine(root,"src","Theme.xaml")+",PackHelper.Theme.xaml");
             args.Add("/resource:"+Path.Combine(root,"assets","packhelper.ico")+",PackHelper.App.ico");
+            args.Add("/resource:"+Path.Combine(root,"assets","packhelper.svg")+",PackHelper.App.svg");
             foreach(string icon in Directory.GetFiles(Path.Combine(root,"assets","icons")))args.Add("/resource:"+icon+","+(Path.GetExtension(icon)==".svg"?"PackHelper.Icons.":"PackHelper.Licenses.")+Path.GetFileName(icon));
             using(var process=Process.Start(new ProcessStartInfo(compiler,String.Join(" ",args.Select(Q))){UseShellExecute=false,CreateNoWindow=true,RedirectStandardOutput=true,RedirectStandardError=true}))
             {string message=process.StandardOutput.ReadToEnd()+process.StandardError.ReadToEnd();process.WaitForExit();if(process.ExitCode!=0)throw new Exception(message);}

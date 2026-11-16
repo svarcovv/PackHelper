@@ -13,8 +13,9 @@ namespace LavaBox.PackHelper
     {
         private async Task CheckUpdates()
         {
+            if(checkingUpdates||busy)return;checkingUpdates=true;checkUpdates.IsEnabled=false;checkUpdates.Content="Проверяем…";
             latest=null;manualUpdate=false;
-            SetBusy(true); Element<Border>("UpdatePanel").Visibility=Visibility.Visible;
+            ShowUpdateOffer();Element<Border>("UpdatePanel").Visibility=Visibility.Visible;
             Element<TextBlock>("UpdateTitle").Text="Проверяем версии…";
             Element<TextBlock>("UpdateDetail").Text="Сравниваем выпуск GitHub и файл в выбранной сборке.";
             downloadUpdate.Visibility=Visibility.Collapsed;
@@ -38,15 +39,16 @@ namespace LavaBox.PackHelper
                     }
                     else await PresentUpdate(result.Manifest);
                 }
-                await ShowCandidate();Message("Проверка завершена.",false);
+                publicStatus.Latest=latest;publicStatus.ReleaseCheckedUtc=DateTime.UtcNow;ShowUpdateOffer();await SavePublicStatus();
+                if(page=="Updates")Message("Проверка завершена.",false);
             }
             catch(Exception error)
             {
                 Element<TextBlock>("UpdateTitle").Text="Не удалось проверить обновления";
-                Element<TextBlock>("UpdateDetail").Text="GitHub недоступен или не ответил вовремя. Встроенный пак "+release.packVersion+" можно установить офлайн.";
-                Message(error is System.Net.Http.HttpRequestException || error is TaskCanceledException ? "Проверь подключение и попробуй ещё раз." : error.Message,true);
+                Element<TextBlock>("UpdateDetail").Text="GitHub не ответил. Попробуй позже или возьми свежий EXE в поддержке.";
+                if(page=="Updates")Message(error is System.Net.Http.HttpRequestException || error is TaskCanceledException ? "Проверка не завершена. Попробуй ещё раз." : error.Message,true);
             }
-            finally{SetBusy(false);}
+            finally{checkingUpdates=false;checkUpdates.IsEnabled=!busy;checkUpdates.Content="Проверить обновления";}
         }
 
         private async Task PresentUpdate(UpdateManifest update)

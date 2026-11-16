@@ -10,7 +10,7 @@ using System.Web.Script.Serialization;
 
 namespace LavaBox.PackHelper
 {
-    public sealed class UpdateClient : IDisposable
+    public sealed partial class UpdateClient : IDisposable
     {
         private readonly HttpClient client;
         public UpdateClient() : this(new HttpClientHandler { AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate }) { }
@@ -18,7 +18,7 @@ namespace LavaBox.PackHelper
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.SystemDefault;
             client = new HttpClient(handler) { Timeout = TimeSpan.FromSeconds(90) };
-            client.DefaultRequestHeaders.UserAgent.ParseAdd("PackHelper/1.1");
+            client.DefaultRequestHeaders.UserAgent.ParseAdd("PackHelper/"+typeof(UpdateClient).Assembly.GetName().Version.ToString(3));
         }
 
         private async Task<string> Json(string url, CancellationToken cancel)
