@@ -43,8 +43,8 @@ namespace PackHelperBuilder
             args.Add("/resource:"+Path.Combine(root,"assets","update-public-key.xml")+",PackHelper.UpdatePublicKey.xml");
             args.AddRange(Directory.GetFiles(Path.Combine(root,"src"),"*.cs"));args.Add(version);
             args.Add("/resource:"+Path.Combine(root,"src","Theme.xaml")+",PackHelper.Theme.xaml");
-            args.Add("/resource:"+Path.Combine(root,"assets","packhelper.ico")+",PackHelper.App.ico");
             args.Add("/resource:"+Path.Combine(root,"assets","packhelper.svg")+",PackHelper.App.svg");
+            args.Add("/resource:"+Path.Combine(root,"LICENSE")+",PackHelper.Licenses.PackHelper.txt");
             foreach(string icon in Directory.GetFiles(Path.Combine(root,"assets","icons")))args.Add("/resource:"+icon+","+(Path.GetExtension(icon)==".svg"?"PackHelper.Icons.":"PackHelper.Licenses.")+Path.GetFileName(icon));
             using(var process=Process.Start(new ProcessStartInfo(compiler,String.Join(" ",args.Select(Q))){UseShellExecute=false,CreateNoWindow=true,RedirectStandardOutput=true,RedirectStandardError=true}))
             {string message=process.StandardOutput.ReadToEnd()+process.StandardError.ReadToEnd();process.WaitForExit();if(process.ExitCode!=0)throw new Exception(message);}

@@ -32,7 +32,7 @@ namespace PackHelperBuilder
                 build.Click+=async delegate
                 {
                     busy=true;build.IsEnabled=false;status.Text="Собираем выпуск…";
-                    try{string path=pack.Text,av=app.Text,pv=version.Text;string output=await Task.Run(()=>ReleaseBuild.Run(project,path,av,pv,Path.Combine(project,"dist")));status.Text="Готово. Приложи EXE, update.json, pack-release.json и SHA256SUMS.txt к выпуску с тегом v"+av+".";Process.Start(new ProcessStartInfo("explorer.exe","\""+output+"\""){UseShellExecute=true});}
+                    try{string path=pack.Text,av=app.Text,pv=version.Text;string output=await Task.Run(()=>ReleaseBuild.Run(project,path,av,pv,Path.Combine(project,"dist")));status.Text="Готово. Приложи EXE и update.json к выпуску с тегом v"+av+".";Process.Start(new ProcessStartInfo("explorer.exe","\""+output+"\""){UseShellExecute=true});}
                     catch(Exception error){status.Text=error.Message;}finally{busy=false;build.IsEnabled=true;}
                 };
                 window.Closing+=delegate(object sender,System.ComponentModel.CancelEventArgs e){if(busy)e.Cancel=true;};

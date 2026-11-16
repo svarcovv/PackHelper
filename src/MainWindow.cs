@@ -29,7 +29,7 @@ namespace LavaBox.PackHelper
         private readonly System.Collections.Generic.List<string> history=new System.Collections.Generic.List<string>();
         [DllImport("dwmapi.dll")] private static extern int DwmSetWindowAttribute(IntPtr window,int attribute,ref int value,int size);
 
-        public MainWindow(PackRelease release,string demoFolder,string initialFolder,string recording)
+        public MainWindow(PackRelease release,string demoFolder,string initialFolder)
         {
             this.release=release;this.demoFolder=demoFolder;this.initialFolder=initialFolder;
             Resources.MergedDictionaries.Add((ResourceDictionary)LoadXaml("Theme.xaml"));
@@ -42,7 +42,6 @@ namespace LavaBox.PackHelper
             SnapsToDevicePixels=true;TextOptions.SetTextFormattingMode(this,TextFormattingMode.Ideal);
             TextOptions.SetTextRenderingMode(this,TextRenderingMode.Auto);TextOptions.SetTextHintingMode(this,TextHintingMode.Fixed);RenderOptions.SetClearTypeHint(this,ClearTypeHint.Enabled);Icon=AppAssets.Icon;
             Element<Image>("Brand").Source=AppAssets.Brand;
-            Element<Image>("DownloadStatsIcon").Source=Icons.Read("download",Brush("Muted"));
             games=Element<ListBox>("Games");closed=Element<CheckBox>("GameClosed");install=Element<Button>("InstallPack");
             checkUpdates=Element<Button>("CheckUpdates");downloadUpdate=Element<Button>("DownloadUpdate");folder=Element<Button>("BrowseFolder");log=Element<Button>("BrowseLog");rescan=Element<Button>("Rescan");
             status=Element<TextBlock>("Status");progress=Element<ProgressBar>("Progress");
@@ -69,8 +68,6 @@ namespace LavaBox.PackHelper
             Closed+=delegate{onlineCancel.Cancel();};
             Closing+=delegate(object sender,System.ComponentModel.CancelEventArgs e){if(busy&&!quitting)e.Cancel=true;};
             PreviewKeyDown+=delegate{keyboardNavigation=true;};PreviewMouseDown+=delegate{keyboardNavigation=false;};
-            foreach(string icon in new[]{"NavInstall:download","NavUpdates:refresh","NavHelp:info"}){var pair=icon.Split(':');Element<Image>(pair[0]+"Icon").Source=Icons.Read(pair[1],Brush("Accent"));}
-            Element<Image>("SupportIcon").Source=Icons.Read("headset",Brush("Muted"));
             Element<Image>("SourceIcon").Source=Icons.Read("github",Brush("Muted"));
             Element<Image>("TelegramIcon").Source=Icons.Read("telegram",Brushes.White);
             Element<Image>("DiscordIcon").Source=Icons.Read("discord",Brushes.White);

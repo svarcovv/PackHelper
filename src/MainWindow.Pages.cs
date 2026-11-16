@@ -38,9 +38,7 @@ namespace LavaBox.PackHelper
             string active=target=="Support"?"Support":target=="Updates"?"NavUpdates":target=="Help"?"NavHelp":"NavInstall";
             foreach(string name in new[]{"NavInstall","NavUpdates","NavHelp","Support"})
             {
-                var b=Element<Button>(name);b.Background=Brush(name==active?"Tint":"Sidebar");b.Foreground=Brush(name==active?"Accent":"Muted");
-                if(name.StartsWith("Nav",StringComparison.Ordinal))Element<Image>(name+"Icon").Source=Icons.Read(name=="NavInstall"?"download":name=="NavUpdates"?"refresh":"info",Brush(name==active?"Accent":"Muted"));
-                if(name=="Support")Element<Image>("SupportIcon").Source=Icons.Read("headset",Brush(name==active?"Accent":"Muted"));
+                var b=Element<Button>(name);b.Background=name==active?Brush("NavSelected"):Brushes.Transparent;b.Foreground=Brush(name==active?"Text":"Muted");b.FontWeight=name==active?FontWeights.SemiBold:FontWeights.Normal;
             }
             Element<Button>("Back").Visibility=target=="Choose"||target=="Updates"?Visibility.Collapsed:Visibility.Visible;
             Element<ScrollViewer>("PageScroll").ScrollToTop();Message("",false);RefreshActions();

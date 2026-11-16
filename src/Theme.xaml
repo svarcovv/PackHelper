@@ -23,7 +23,7 @@
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate>
-          <Border BorderBrush="{DynamicResource Accent}" BorderThickness="0,0,0,2" Margin="2,0,2,-4" IsHitTestVisible="False" />
+          <Border BorderBrush="{DynamicResource Accent}" BorderThickness="1" CornerRadius="5" Margin="2" IsHitTestVisible="False" />
         </ControlTemplate>
       </Setter.Value>
     </Setter>
@@ -32,7 +32,7 @@
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate>
-          <Border BorderBrush="#2D170C" BorderThickness="0,0,0,2" Margin="12,0,12,3" IsHitTestVisible="False" />
+          <Border BorderBrush="#2D170C" BorderThickness="1" CornerRadius="5" Margin="3" IsHitTestVisible="False" />
         </ControlTemplate>
       </Setter.Value>
     </Setter>
@@ -43,7 +43,7 @@
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate>
-          <Border BorderBrush="{DynamicResource Accent}" BorderThickness="0,0,0,2" Margin="12,0,12,3" IsHitTestVisible="False" />
+          <Border BorderBrush="{DynamicResource Accent}" BorderThickness="1" CornerRadius="5" Margin="3" IsHitTestVisible="False" />
         </ControlTemplate>
       </Setter.Value>
     </Setter>
@@ -56,6 +56,8 @@
   <SolidColorBrush x:Key="Muted" Color="#C2AA98" />
   <SolidColorBrush x:Key="Accent" Color="#FFB073" />
   <SolidColorBrush x:Key="Tint" Color="#4A2C1B" />
+  <SolidColorBrush x:Key="NavSelected" Color="#2D241E" />
+  <SolidColorBrush x:Key="SubtleAction" Color="#34271E" />
   <SolidColorBrush x:Key="Line" Color="#51382A" />
   <SolidColorBrush x:Key="Success" Color="#B8D9AE" />
   <SolidColorBrush x:Key="Danger" Color="#FFB5A1" />
@@ -126,11 +128,17 @@
     <Setter Property="BorderThickness" Value="0" />
     <Setter Property="Foreground" Value="{DynamicResource Muted}" />
   </Style>
+  <Style x:Key="Subtle" TargetType="Button" BasedOn="{StaticResource Secondary}">
+    <Setter Property="Background" Value="{DynamicResource SubtleAction}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource ControlLine}" />
+    <Setter Property="Foreground" Value="{DynamicResource Text}" />
+  </Style>
   <Style x:Key="Nav" TargetType="Button" BasedOn="{StaticResource Quiet}">
     <Setter Property="HorizontalContentAlignment" Value="Left" />
-    <Setter Property="Padding" Value="13,12" />
+    <Setter Property="Padding" Value="12,9" />
+    <Setter Property="MinHeight" Value="40" />
     <Setter Property="HorizontalAlignment" Value="Stretch" />
-    <Setter Property="Margin" Value="0,4" />
+    <Setter Property="Margin" Value="0,2" />
   </Style>
   <Style TargetType="TextBox">
     <Setter Property="Background" Value="{DynamicResource Sidebar}" />

@@ -20,15 +20,14 @@ namespace LavaBox.PackHelper
             try
             {
                 if (args.Length > 0 && args[0] == "--apply-update") { SelfUpdate.ApplyAndRestart(args, Assembly.GetExecutingAssembly().Location); return; }
-                string demo = null, folder = null, recording = null;
+                string demo = null, folder = null;
                 for (int i = 0; i < args.Length; i++)
                 {
                     if (args[i] == "--demo-folder" && i+1 < args.Length) demo = PackPaths.Normalize(args[++i]);
                     else if (args[i] == "--game-folder" && i+1 < args.Length) folder = PackPaths.Normalize(args[++i]);
-                    else if (args[i] == "--record" && i+1 < args.Length) recording = PackPaths.Normalize(args[++i]);
                 }
                 var app = new Application { ShutdownMode = ShutdownMode.OnMainWindowClose };
-                app.Run(new MainWindow(PackRelease.Embedded(), demo, folder, recording));
+                app.Run(new MainWindow(PackRelease.Embedded(), demo, folder));
             }
             catch (Exception error) { MessageBox.Show(error.Message, "PackHelper", MessageBoxButton.OK, MessageBoxImage.Error); }
         }
