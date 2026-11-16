@@ -66,7 +66,7 @@ namespace LavaBox.PackHelper
             var text=Element<TextBlock>("DownloadCount");
             text.Text=(publicStatus.Downloads.HasValue?(publicStatus.DownloadsComplete?"":"≥ ")+publicStatus.Downloads.Value.ToString("N0",CultureInfo.CurrentCulture):"Нет данных");
             System.Windows.Automation.AutomationProperties.SetName(text,"Скачивания приложения: "+text.Text);
-            text.ToolTip="Скачивания EXE из опубликованных выпусков GitHub. Это не число уникальных игроков; Discord не учитывается."+
+            Element<Border>("DownloadStats").ToolTip="Скачивания EXE из опубликованных выпусков GitHub. Это не число уникальных игроков; Discord не учитывается."+
                 (publicStatus.Downloads.HasValue?"\nОбновлено: "+publicStatus.DownloadsCheckedUtc.ToLocalTime().ToString("g",CultureInfo.CurrentCulture):"");
         }
         private void ShowUpdateOffer()

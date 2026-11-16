@@ -18,7 +18,7 @@ namespace LavaBox.PackHelper
             using (var reader = XmlReader.Create(stream, new XmlReaderSettings { DtdProcessing = DtdProcessing.Prohibit, XmlResolver = null }))
             {
                 var doc = XDocument.Load(reader); var drawing = new DrawingGroup();
-                var pen = new Pen(brush, 1.8) { StartLineCap = PenLineCap.Round, EndLineCap = PenLineCap.Round, LineJoin = PenLineJoin.Round };
+                var pen = new Pen(brush, Number(doc.Root,"stroke-width",2)) { StartLineCap = PenLineCap.Round, EndLineCap = PenLineCap.Round, LineJoin = PenLineJoin.Round };
                 foreach (var node in doc.Root.Elements())
                 {
                     if ((string)node.Attribute("stroke") == "none" && (string)node.Attribute("fill") == "none") continue;

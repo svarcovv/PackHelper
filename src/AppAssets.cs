@@ -1,8 +1,6 @@
 using System;
-using System.Linq;
 using System.Reflection;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using System.Xml;
 using System.Xml.Linq;
 
@@ -28,16 +26,13 @@ namespace LavaBox.PackHelper
                         if(geometry!=null)group.Children.Add(new GeometryDrawing((Brush)new BrushConverter().ConvertFromString((string)node.Attribute("fill")),null,geometry));
                     }
                 }
+                group.Children.Add(new GeometryDrawing(Brushes.Transparent,null,new RectangleGeometry(new System.Windows.Rect(0,0,36,36))));
                 group.Freeze();return new DrawingImage(group);
             }
         }
         public static ImageSource Icon
         {
-            get
-            {
-                using(var stream=Assembly.GetExecutingAssembly().GetManifestResourceStream("PackHelper.App.ico"))
-                {var decoder=new IconBitmapDecoder(stream,BitmapCreateOptions.PreservePixelFormat,BitmapCacheOption.OnLoad);return decoder.Frames.OrderByDescending(f=>f.PixelWidth).First();}
-            }
+            get { return Brand; }
         }
     }
 }

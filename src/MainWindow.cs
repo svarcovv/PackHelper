@@ -38,9 +38,10 @@ namespace LavaBox.PackHelper
             Content=root;Title="PackHelper "+release.appVersion;Width=960;Height=Math.Min(750,SystemParameters.WorkArea.Height-30);
             MinWidth=800;MinHeight=Math.Min(600,Height);WindowStartupLocation=WindowStartupLocation.CenterScreen;
             FontFamily=AppAssets.Typeface;FontSize=14;Background=Brush("Canvas");Foreground=Brush("Text");UseLayoutRounding=true;
-            SnapsToDevicePixels=true;TextOptions.SetTextFormattingMode(this,TextFormattingMode.Display);
-            TextOptions.SetTextRenderingMode(this,TextRenderingMode.Grayscale);Icon=AppAssets.Icon;
+            SnapsToDevicePixels=true;TextOptions.SetTextFormattingMode(this,TextFormattingMode.Ideal);
+            TextOptions.SetTextRenderingMode(this,TextRenderingMode.Auto);TextOptions.SetTextHintingMode(this,TextHintingMode.Fixed);RenderOptions.SetClearTypeHint(this,ClearTypeHint.Enabled);Icon=AppAssets.Icon;
             Element<Image>("Brand").Source=AppAssets.Brand;
+            Element<Image>("DownloadStatsIcon").Source=Icons.Read("download",Brush("Muted"));
             games=Element<ListBox>("Games");closed=Element<CheckBox>("GameClosed");install=Element<Button>("InstallPack");
             checkUpdates=Element<Button>("CheckUpdates");downloadUpdate=Element<Button>("DownloadUpdate");folder=Element<Button>("BrowseFolder");log=Element<Button>("BrowseLog");rescan=Element<Button>("Rescan");
             status=Element<TextBlock>("Status");progress=Element<ProgressBar>("Progress");

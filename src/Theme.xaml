@@ -42,6 +42,11 @@
   <SolidColorBrush x:Key="Line" Color="#51382A" />
   <SolidColorBrush x:Key="Success" Color="#B8D9AE" />
   <SolidColorBrush x:Key="Danger" Color="#FFB5A1" />
+  <Style TargetType="Image">
+    <Setter Property="SnapsToDevicePixels" Value="False" />
+    <Setter Property="RenderOptions.EdgeMode" Value="Unspecified" />
+    <Setter Property="Stretch" Value="Uniform" />
+  </Style>
   <Style TargetType="TextBlock">
     <Setter Property="Foreground" Value="{DynamicResource Text}" />
     <Setter Property="TextWrapping" Value="Wrap" />
@@ -128,7 +133,7 @@
     <Setter Property="SelectionBrush" Value="#754426" />
     <Setter Property="BorderBrush" Value="{DynamicResource ControlLine}" />
     <Setter Property="Padding" Value="12,10" />
-    <Setter Property="FontSize" Value="13" />
+    <Setter Property="FontSize" Value="14" />
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="TextBox">

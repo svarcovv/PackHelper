@@ -1,7 +1,7 @@
 ﻿param(
     [Parameter(Mandatory=$true)][string]$PackPath,
     [Parameter(Mandatory=$true)][ValidatePattern('^[0-9]+\.[0-9]+\.[0-9]+$')][string]$PackVersion,
-    [ValidatePattern('^[0-9]{1,4}\.[0-9]{1,4}\.[0-9]{1,4}$')][string]$AppVersion = '1.4.0',
+    [ValidatePattern('^[0-9]{1,4}\.[0-9]{1,4}\.[0-9]{1,4}$')][string]$AppVersion = '1.4.1',
     [string]$PackId = '4e7502b2-1883-44d9-a2b4-03cfd5884e13',
     [string]$SourceUrl = 'https://github.com/svarcovv/PackHelper',
     [string]$OutputDirectory = (Join-Path $PSScriptRoot 'dist')
