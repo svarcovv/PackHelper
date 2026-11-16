@@ -42,6 +42,11 @@ static class CoreTests
         Check(GameDiscovery.ParseLog(log.Replace(release.packId, Guid.NewGuid().ToString()), release).Count == 0, "unrelated pack ignored");
         Check(GameDiscovery.ParseLog(log.Replace("downloads\\", "downloads\\..\\outside\\"), release).Count == 0, "path traversal in log ignored");
         Directory.CreateDirectory(Path.Combine(root, "resourcepacks"));
+        Directory.CreateDirectory(Path.Combine(root, "logs"));
+        Check(GameDiscovery.ResolveInput(Path.Combine(root,"resourcepacks"))==root,"resourcepacks input resolves game root");
+        Check(GameDiscovery.ResolveInput(Path.Combine(root,"logs"))==root,"logs folder input resolves game root");
+        Check(GameDiscovery.ResolveInput("\""+root+"\"")==root,"quoted Explorer path accepted");
+        Throws(()=>GameDiscovery.ResolveInput("relative-folder"),"ambiguous relative input rejected");
         string personal = Path.Combine(root, "resourcepacks", "personal.zip"); File.WriteAllText(personal, "keep");
         var result = PackInstall.Install(candidate, release, () => new MemoryStream(payload));
         Check(!result.AlreadyPresent && PackInstall.Hash(target, true) == release.sha256, "standard cache installed and verified");

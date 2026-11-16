@@ -13,6 +13,19 @@ namespace LavaBox.PackHelper
 {
     public static class GameDiscovery
     {
+        public static string ResolveInput(string input)
+        {
+            string value=Environment.ExpandEnvironmentVariables((input??"").Trim().Trim('"'));
+            if(String.IsNullOrWhiteSpace(value)||!Path.IsPathRooted(value))throw new IOException("Вставь полный адрес папки из строки проводника.");
+            string path=PackPaths.Normalize(value);
+            if(File.Exists(path))
+            {if(!Path.GetExtension(path).Equals(".log",StringComparison.OrdinalIgnoreCase))throw new IOException("Для поиска по логу выбери latest.log.");return path;}
+            string leaf=Path.GetFileName(path);
+            if(leaf.Equals("resourcepacks",StringComparison.OrdinalIgnoreCase)||leaf.Equals("logs",StringComparison.OrdinalIgnoreCase))
+            {string parent=Path.GetDirectoryName(path);if(PackPaths.LooksLikeGame(parent))return parent;}
+            if(!PackPaths.LooksLikeGame(path))throw new IOException("В этой папке не найдена сборка. Выбери папку с options.txt, logs или resourcepacks.");
+            return path;
+        }
         private static readonly Regex CacheLine = new Regex(@"Existing file (?<path>.+?) not found or had mismatched hash", RegexOptions.Compiled);
         private static readonly Regex GameArgument = new Regex("(?:^|\\s)--gameDir(?:=|\\s+)(?:\"(?<quoted>[^\"]+)\"|(?<plain>[^\\s]+))", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
@@ -131,7 +144,8 @@ namespace LavaBox.PackHelper
             string[] launchers = { Path.Combine(roaming, "PrismLauncher", "instances"), Path.Combine(local, "PrismLauncher", "instances"),
                 Path.Combine(roaming, "MultiMC", "instances"), Path.Combine(local, "MultiMC", "instances"),
                 Path.Combine(roaming, "ATLauncher", "instances"), Path.Combine(roaming, "com.modrinth.theseus", "profiles"),
-                Path.Combine(local, "com.modrinth.theseus", "profiles"), Path.Combine(home, "curseforge", "minecraft", "Instances"),
+                Path.Combine(local, "com.modrinth.theseus", "profiles"), Path.Combine(roaming, "ModrinthApp", "profiles"),
+                Path.Combine(local, "ModrinthApp", "profiles"), Path.Combine(home, "curseforge", "minecraft", "Instances"),
                 Path.Combine(home, "Documents", "CurseForge", "Minecraft", "Instances") };
             foreach (string launcher in launchers) foreach (string instance in Children(launcher))
             {

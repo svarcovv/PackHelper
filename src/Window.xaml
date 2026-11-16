@@ -1,78 +1,101 @@
 <Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Background="{DynamicResource Canvas}" SnapsToDevicePixels="True">
-  <Grid.Resources>
-    <SolidColorBrush x:Key="Canvas" Color="#FFF8F0"/><SolidColorBrush x:Key="Surface" Color="#FFFFFF"/>
-    <SolidColorBrush x:Key="Text" Color="#39291E"/><SolidColorBrush x:Key="Muted" Color="#7C6456"/>
-    <SolidColorBrush x:Key="Accent" Color="#B94E20"/><SolidColorBrush x:Key="AccentHover" Color="#A9441A"/>
-    <SolidColorBrush x:Key="Tint" Color="#FFF0E3"/><SolidColorBrush x:Key="Line" Color="#EBD7C7"/>
-    <SolidColorBrush x:Key="ControlLine" Color="#A7846C"/><SolidColorBrush x:Key="Success" Color="#2D714B"/><SolidColorBrush x:Key="Danger" Color="#B1372A"/>
-    <Style TargetType="TextBlock"><Setter Property="Foreground" Value="{DynamicResource Text}"/><Setter Property="TextWrapping" Value="Wrap"/><Setter Property="LineHeight" Value="21"/></Style>
-    <Style x:Key="Secondary" TargetType="Button">
-      <Setter Property="Background" Value="{DynamicResource Surface}"/><Setter Property="Foreground" Value="{DynamicResource Text}"/>
-      <Setter Property="BorderBrush" Value="{DynamicResource Line}"/><Setter Property="Padding" Value="15,9"/><Setter Property="MinHeight" Value="44"/>
-      <Setter Property="Cursor" Value="Hand"/><Setter Property="FontSize" Value="13"/><Setter Property="FontWeight" Value="SemiBold"/>
-      <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
-      <Setter Property="Template"><Setter.Value><ControlTemplate TargetType="Button">
-        <Border x:Name="Focus" BorderThickness="2" BorderBrush="Transparent" CornerRadius="12">
-          <Border x:Name="Body" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" CornerRadius="10" Padding="{TemplateBinding Padding}"><ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" RecognizesAccessKey="True"/></Border>
-        </Border>
-        <ControlTemplate.Triggers>
-          <MultiTrigger><MultiTrigger.Conditions><Condition Property="IsMouseOver" Value="True"/><Condition Property="Tag" Value="{x:Null}"/></MultiTrigger.Conditions><Setter TargetName="Body" Property="Background" Value="{DynamicResource Tint}"/></MultiTrigger>
-          <Trigger Property="IsKeyboardFocused" Value="True"><Setter TargetName="Focus" Property="BorderBrush" Value="{DynamicResource Accent}"/></Trigger>
-          <Trigger Property="IsEnabled" Value="False"><Setter Property="Opacity" Value="0.5"/></Trigger>
-        </ControlTemplate.Triggers>
-      </ControlTemplate></Setter.Value></Setter>
-    </Style>
-    <Style x:Key="Primary" TargetType="Button" BasedOn="{StaticResource Secondary}">
-      <Setter Property="Tag" Value="Primary"/><Setter Property="Background" Value="{DynamicResource Accent}"/><Setter Property="Foreground" Value="White"/>
-      <Setter Property="BorderBrush" Value="{DynamicResource Accent}"/><Setter Property="FontSize" Value="15"/><Setter Property="MinHeight" Value="50"/>
-      <Style.Triggers><Trigger Property="IsMouseOver" Value="True"><Setter Property="Background" Value="{DynamicResource AccentHover}"/></Trigger></Style.Triggers>
-    </Style>
-    <Style x:Key="Link" TargetType="Button" BasedOn="{StaticResource Secondary}"><Setter Property="Background" Value="Transparent"/><Setter Property="BorderBrush" Value="Transparent"/><Setter Property="Foreground" Value="{DynamicResource Muted}"/><Setter Property="Padding" Value="8,5"/></Style>
-    <Style TargetType="ComboBoxItem"><Setter Property="Padding" Value="12,10"/><Setter Property="MinHeight" Value="42"/>
-      <Setter Property="Template"><Setter.Value><ControlTemplate TargetType="ComboBoxItem"><Border x:Name="Row" Background="{DynamicResource Surface}" CornerRadius="6" Padding="{TemplateBinding Padding}"><ContentPresenter/></Border><ControlTemplate.Triggers><Trigger Property="IsHighlighted" Value="True"><Setter TargetName="Row" Property="Background" Value="{DynamicResource Tint}"/></Trigger><Trigger Property="IsSelected" Value="True"><Setter TargetName="Row" Property="Background" Value="{DynamicResource Tint}"/></Trigger></ControlTemplate.Triggers></ControlTemplate></Setter.Value></Setter>
-    </Style>
-    <Style TargetType="ComboBox"><Setter Property="MinHeight" Value="48"/><Setter Property="FontSize" Value="14"/><Setter Property="Foreground" Value="{DynamicResource Text}"/>
-      <Setter Property="ItemTemplate"><Setter.Value><DataTemplate><TextBlock Text="{Binding}" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap"/></DataTemplate></Setter.Value></Setter>
-      <Setter Property="Template"><Setter.Value><ControlTemplate TargetType="ComboBox"><Grid>
-        <ToggleButton Focusable="False" IsChecked="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}" ClickMode="Press"><ToggleButton.Template><ControlTemplate TargetType="ToggleButton"><Border CornerRadius="10" Background="{DynamicResource Surface}" BorderBrush="{DynamicResource ControlLine}" BorderThickness="1"><Path Data="M 0 0 L 5 5 L 10 0" Stroke="{DynamicResource Muted}" StrokeThickness="1.7" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,17,0"/></Border></ControlTemplate></ToggleButton.Template></ToggleButton>
-        <ContentPresenter Margin="14,10,42,10" VerticalAlignment="Center" IsHitTestVisible="False" Content="{TemplateBinding SelectionBoxItem}" ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"/>
-        <Border x:Name="KeyboardRing" IsHitTestVisible="False" CornerRadius="10" BorderThickness="2" BorderBrush="Transparent"/>
-        <Popup x:Name="PART_Popup" Placement="Bottom" AllowsTransparency="True" Focusable="False" IsOpen="{TemplateBinding IsDropDownOpen}"><Border MinWidth="{Binding ActualWidth, RelativeSource={RelativeSource TemplatedParent}}" MaxHeight="280" Background="{DynamicResource Surface}" BorderBrush="{DynamicResource ControlLine}" BorderThickness="1" CornerRadius="10" Padding="5" Margin="0,5,0,0"><ScrollViewer CanContentScroll="True"><ItemsPresenter KeyboardNavigation.DirectionalNavigation="Contained"/></ScrollViewer></Border></Popup>
-      </Grid><ControlTemplate.Triggers><Trigger Property="IsKeyboardFocusWithin" Value="True"><Setter TargetName="KeyboardRing" Property="BorderBrush" Value="{DynamicResource Accent}"/></Trigger><Trigger Property="IsEnabled" Value="False"><Setter Property="Opacity" Value="0.55"/></Trigger></ControlTemplate.Triggers></ControlTemplate></Setter.Value></Setter>
-    </Style>
-  </Grid.Resources>
-  <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
-  <Grid Margin="28,19,28,15"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-    <StackPanel Orientation="Horizontal" VerticalAlignment="Center"><Image x:Name="HeaderIcon" Width="25" Height="25" Margin="0,0,11,0"/><TextBlock Text="PackHelper" FontSize="21" FontWeight="SemiBold" VerticalAlignment="Center"/></StackPanel>
-    <Button x:Name="CheckUpdates" Grid.Column="1" Style="{StaticResource Link}" AutomationProperties.Name="Проверить обновления"><StackPanel Orientation="Horizontal"><Image x:Name="RefreshIcon" Width="17" Height="17" Margin="0,0,8,0"/><TextBlock Text="Проверить обновления" Foreground="{DynamicResource Muted}"/></StackPanel></Button>
-  </Grid>
-  <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="28,0,28,8">
+  <Grid.ColumnDefinitions><ColumnDefinition Width="202"/><ColumnDefinition/></Grid.ColumnDefinitions>
+  <Border Background="{DynamicResource Sidebar}" Padding="19,26,19,20"><Grid>
+    <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
     <StackPanel>
-      <TextBlock Text="Ресурспак для LavaBox" FontSize="27" FontWeight="SemiBold" LineHeight="35" Margin="0,7,0,6"/>
-      <TextBlock Text="Выбери сборку и установи пак. При входе Minecraft применит его сам." Foreground="{DynamicResource Muted}" Margin="0,0,0,23"/>
-      <Border Background="{DynamicResource Surface}" CornerRadius="16" Padding="21" BorderBrush="{DynamicResource Line}" BorderThickness="1"><StackPanel>
-        <Grid Margin="0,0,0,11"><TextBlock Text="Сборка Minecraft" FontWeight="SemiBold" FontSize="15" VerticalAlignment="Center"/><Button x:Name="Rescan" Content="Найти снова" HorizontalAlignment="Right" Style="{StaticResource Link}" Margin="0,-8,-8,-7"/></Grid>
-        <ComboBox x:Name="Games" AutomationProperties.Name="Сборка Minecraft"/>
-        <TextBlock x:Name="GamePath" Foreground="{DynamicResource Muted}" FontSize="12" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" Margin="0,7,0,12"/>
-        <WrapPanel><Button x:Name="BrowseFolder" AutomationProperties.Name="Выбрать папку" Style="{StaticResource Secondary}" Margin="0,0,8,0"><StackPanel Orientation="Horizontal"><Image x:Name="FolderIcon" Width="18" Height="18" Margin="0,0,8,0"/><TextBlock Text="Выбрать папку"/></StackPanel></Button><Button x:Name="BrowseLog" AutomationProperties.Name="Найти по логу" Style="{StaticResource Secondary}"><StackPanel Orientation="Horizontal"><Image x:Name="LogIcon" Width="18" Height="18" Margin="0,0,8,0"/><TextBlock Text="Найти по логу"/></StackPanel></Button></WrapPanel>
-        <TextBlock x:Name="GameNote" Foreground="{DynamicResource Muted}" FontSize="12" Margin="0,12,0,0"/>
-      </StackPanel></Border>
-      <Grid Margin="0,23,0,20"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-        <Border Background="{DynamicResource Tint}" CornerRadius="13" Width="57" Height="57" VerticalAlignment="Top"><Image x:Name="PackIcon" Width="29" Height="29"/></Border>
-        <StackPanel Grid.Column="1" Margin="14,1,12,0"><TextBlock x:Name="PackTitle" FontSize="18" FontWeight="SemiBold"/><TextBlock x:Name="PackDetail" Foreground="{DynamicResource Muted}" FontSize="12" Margin="0,3,0,0"/><TextBlock x:Name="PackState" FontSize="13" Margin="0,5,0,0"/></StackPanel>
-        <Image x:Name="StateIcon" Grid.Column="2" Width="22" Height="22" VerticalAlignment="Center"/>
-      </Grid>
-      <Border x:Name="UpdatePanel" Background="{DynamicResource Tint}" CornerRadius="13" Padding="17" Margin="0,0,0,18" Visibility="Collapsed"><StackPanel><TextBlock x:Name="UpdateTitle" FontWeight="SemiBold" FontSize="15"/><TextBlock x:Name="UpdateDetail" Foreground="{DynamicResource Muted}" Margin="0,6,0,0" FontSize="13"/><Button x:Name="DownloadUpdate" Style="{StaticResource Secondary}" HorizontalAlignment="Left" Margin="0,12,0,0" Content="Обновить приложение" Visibility="Collapsed"/></StackPanel></Border>
-      <CheckBox x:Name="GameClosed" FontSize="14" Foreground="{DynamicResource Text}" Margin="0,0,0,15" Padding="6,0,0,0" VerticalContentAlignment="Center" Content="Minecraft закрыт. Лаунчер можно оставить открытым."/>
-      <Button x:Name="InstallPack" AutomationProperties.Name="Установить ресурспак" Style="{StaticResource Primary}"><StackPanel Orientation="Horizontal"><Image x:Name="InstallIcon" Width="20" Height="20" Margin="0,0,10,0"/><TextBlock x:Name="InstallLabel" Text="Установить ресурспак" Foreground="White" FontWeight="SemiBold" FontSize="15"/></StackPanel></Button>
-      <ProgressBar x:Name="Progress" Height="4" Foreground="{DynamicResource Accent}" Background="{DynamicResource Tint}" Margin="0,13,0,0" Visibility="Collapsed"/>
-      <TextBlock x:Name="Status" Text="Закрой Minecraft перед установкой." Foreground="{DynamicResource Muted}" FontSize="13" Margin="0,12,0,0" MinHeight="22" AutomationProperties.LiveSetting="Polite"/>
-      <Expander x:Name="Details" Header="Подробности установки" Foreground="{DynamicResource Muted}" FontSize="12" Margin="0,12,0,0"><TextBox x:Name="Destination" IsReadOnly="True" TextWrapping="Wrap" BorderThickness="0" Background="Transparent" Foreground="{DynamicResource Muted}" Padding="0,9" FontSize="12"/></Expander>
+      <Image x:Name="Brand" Width="42" Height="42" HorizontalAlignment="Left" Margin="9,0,0,13"/>
+      <TextBlock Text="PackHelper" FontSize="19" FontWeight="SemiBold" Margin="9,0,0,0"/>
+      <TextBlock Text="Ресурспак LavaBox" FontSize="12" Foreground="{DynamicResource Muted}" Margin="9,4,0,27"/>
+      <Button x:Name="NavInstall" Content="Установить пак" Style="{StaticResource Nav}"/>
+      <Button x:Name="NavUpdates" Content="Обновления" Style="{StaticResource Nav}"/>
+      <Button x:Name="NavHelp" Content="Помощь" Style="{StaticResource Nav}"/>
     </StackPanel>
-  </ScrollViewer>
-  <Grid Grid.Row="2" Margin="20,2,28,12"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/><ColumnDefinition/></Grid.ColumnDefinitions>
-    <Button x:Name="Source" AutomationProperties.Name="Открыть исходники на GitHub" Style="{StaticResource Link}"><StackPanel Orientation="Horizontal"><Image x:Name="GitHubIcon" Width="17" Height="17" Margin="0,0,7,0"/><TextBlock Text="Исходники" Foreground="{DynamicResource Muted}" FontSize="12"/></StackPanel></Button>
-    <Button x:Name="Help" Grid.Column="1" Style="{StaticResource Link}" Content="Помощь" FontSize="12"/>
-    <TextBlock x:Name="AppVersion" Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="{DynamicResource Muted}" FontSize="12"/>
+    <StackPanel Grid.Row="2"><Button x:Name="Support" Content="Поддержка" Style="{StaticResource Nav}"/><Button x:Name="Source" Content="Исходный код" Style="{StaticResource Nav}"/><TextBlock x:Name="AppVersion" Foreground="{DynamicResource Muted}" FontSize="11" Margin="13,18,0,0"/></StackPanel>
+  </Grid></Border>
+  <Grid Grid.Column="1" Margin="38,29,38,22">
+    <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+    <StackPanel>
+      <StackPanel x:Name="Steps" Orientation="Horizontal" Margin="0,0,0,27">
+        <TextBlock x:Name="StepChoose" Text="1  Сборка" FontSize="12"/><TextBlock Text="/" Foreground="{DynamicResource Muted}" Margin="18,0"/>
+        <TextBlock x:Name="StepPrepare" Text="2  Установка" FontSize="12"/><TextBlock Text="/" Foreground="{DynamicResource Muted}" Margin="18,0"/>
+        <TextBlock x:Name="StepDone" Text="3  Готово" FontSize="12"/>
+      </StackPanel>
+      <TextBlock x:Name="PageTitle" FontSize="27" FontWeight="SemiBold" LineHeight="35"/>
+      <TextBlock x:Name="PageDescription" Style="{StaticResource Body}" Margin="0,10,0,24"/>
+    </StackPanel>
+    <ScrollViewer x:Name="PageScroll" Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="0,0,8,14"><Grid x:Name="PageHost">
+      <StackPanel x:Name="ChoosePage">
+        <Grid Margin="0,0,0,12"><TextBlock x:Name="FoundCount" Foreground="{DynamicResource Muted}" FontSize="12" VerticalAlignment="Center"/><Button x:Name="Rescan" Content="Найти снова" Style="{StaticResource Quiet}" HorizontalAlignment="Right" Padding="8,4" MinHeight="32"/></Grid>
+        <ListBox x:Name="Games" AutomationProperties.Name="Найденные сборки Minecraft" Background="Transparent" BorderThickness="0" MaxHeight="238" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+          <ListBox.ItemTemplate><DataTemplate><StackPanel><TextBlock Text="{Binding DisplayName}" FontWeight="SemiBold" FontSize="15"/><TextBlock Text="{Binding GameDirectory}" FontSize="12" Foreground="{DynamicResource Muted}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="0,5,0,0" ToolTip="{Binding GameDirectory}"/></StackPanel></DataTemplate></ListBox.ItemTemplate>
+        </ListBox>
+        <TextBlock x:Name="NoGames" Text="Автоматически найти папку не удалось. Открой её через Minecraft или свой лаунчер." Style="{StaticResource Body}" Visibility="Collapsed"/>
+        <Button x:Name="FindFolder" Content="Сборки нет в списке" Style="{StaticResource Quiet}" HorizontalAlignment="Left" Padding="0,9" Margin="0,9,0,0"/>
+        <TextBlock Text="Если сборок несколько, выбери ту, из которой играешь на сервере." Style="{StaticResource Body}" FontSize="12" Margin="0,19,0,0"/>
+      </StackPanel>
+      <StackPanel x:Name="LocatePage" Visibility="Collapsed">
+        <TextBlock Text="Через сам Minecraft" Style="{StaticResource Section}" Margin="0,0,0,8"/>
+        <TextBlock Text="1. Открой Настройки → Наборы ресурсов → Открыть папку.&#10;2. Скопируй адрес папки из строки проводника (Ctrl + L, Ctrl + C).&#10;3. Вставь адрес сюда. Подойдёт и сама папка resourcepacks." Style="{StaticResource Body}"/>
+        <TextBox x:Name="FolderInput" Margin="0,16,0,8" AutomationProperties.Name="Путь к папке Minecraft" ToolTip="Путь к игре, resourcepacks, logs или latest.log"/>
+        <Button x:Name="UsePath" Content="Использовать этот путь" Style="{StaticResource Secondary}" HorizontalAlignment="Left"/>
+        <TextBlock Text="Или выбери через проводник" Style="{StaticResource Section}"/>
+        <WrapPanel><Button x:Name="BrowseFolder" Content="Выбрать папку" Style="{StaticResource Secondary}" Margin="0,0,8,8"/><Button x:Name="LogGuide" Content="У меня есть latest.log" Style="{StaticResource Quiet}" Margin="0,0,0,8"/></WrapPanel>
+        <Button x:Name="LauncherHelp" Content="Где папка в моём лаунчере?" Style="{StaticResource Quiet}" HorizontalAlignment="Left" Padding="0,8"/>
+      </StackPanel>
+      <StackPanel x:Name="LauncherPage" Visibility="Collapsed">
+        <TextBlock Text="Prism / MultiMC" Style="{StaticResource Section}" Margin="0,0,0,4"/><TextBlock Text="Выбери сборку в лаунчере → Папка → Папка Minecraft. Скопируй адрес открывшейся папки." Style="{StaticResource Body}"/>
+        <TextBlock Text="Modrinth App" Style="{StaticResource Section}"/><TextBlock Text="Открой нужную сборку и нажми значок папки. Если ты менял папку в настройках Modrinth, используй новый путь." Style="{StaticResource Body}"/>
+        <TextBlock Text="TLauncher / Legacy / официальный" Style="{StaticResource Section}"/><TextBlock Text="Открой настройки лаунчера и найди «Папка игры» или «Директория». Для отдельной версии путь может отличаться. Способ через меню Minecraft на предыдущем экране работает независимо от лаунчера." Style="{StaticResource Body}"/>
+        <TextBlock Text="Пример обычного пути" Style="{StaticResource Section}"/><TextBox Text="%AppData%\.minecraft" IsReadOnly="True"/><TextBlock Text="Это пример, а не обязательное место. Можно вставить путь с переменной %AppData%." Style="{StaticResource Body}" FontSize="12"/>
+      </StackPanel>
+      <StackPanel x:Name="LogPage" Visibility="Collapsed">
+        <TextBlock Text="Нужен лог именно твоей сборки" Style="{StaticResource Section}" Margin="0,0,0,6"/>
+        <TextBlock Text="1. Один раз попробуй зайти на lavabox.fun.&#10;2. Полностью закрой Minecraft.&#10;3. В папке этой сборки открой logs и выбери latest.log." Style="{StaticResource Body}"/>
+        <TextBox Text="Папка твоей сборки\logs\latest.log" IsReadOnly="True" Margin="0,20,0,12"/>
+        <TextBlock Text="Файл можно перетащить прямо в PackHelper. Лог помогает найти особый кэш модов вроде OpSec. Для обычной сборки достаточно выбрать папку игры." Style="{StaticResource Body}"/>
+        <Button x:Name="BrowseLog" Content="Выбрать latest.log" Style="{StaticResource Secondary}" HorizontalAlignment="Left" Margin="0,20,0,0"/>
+      </StackPanel>
+      <StackPanel x:Name="PreparePage" Visibility="Collapsed">
+        <TextBlock x:Name="SelectedName" FontSize="17" FontWeight="SemiBold"/><TextBox x:Name="GamePath" IsReadOnly="True" TextWrapping="Wrap" Margin="0,10,0,0"/>
+        <TextBlock x:Name="GameNote" Style="{StaticResource Body}" FontSize="12"/>
+        <Border BorderBrush="{DynamicResource Line}" BorderThickness="0,1,0,0" Margin="0,23,0,21"/>
+        <Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><StackPanel><TextBlock x:Name="PackTitle" FontWeight="SemiBold" FontSize="16"/><TextBlock x:Name="PackDetail" Style="{StaticResource Body}" FontSize="12"/><TextBlock x:Name="PackState" Style="{StaticResource Body}" FontSize="12"/></StackPanel><Image x:Name="StateIcon" Grid.Column="1" Width="22" Height="22" Margin="14,0,0,0"/></Grid>
+        <CheckBox x:Name="GameClosed" AutomationProperties.Name="Minecraft полностью закрыт" Margin="0,29,0,0"><TextBlock Text="Minecraft полностью закрыт.&#10;Лаунчер можно оставить открытым."/></CheckBox>
+      </StackPanel>
+      <StackPanel x:Name="DonePage" Visibility="Collapsed">
+        <Image x:Name="DoneIcon" Width="38" Height="38" HorizontalAlignment="Left" Margin="0,0,0,18"/><TextBlock Text="Пак установлен и проверен" FontSize="18" FontWeight="SemiBold"/>
+        <TextBlock Text="Теперь запусти свою сборку, зайди на сервер и разреши серверный ресурспак. Minecraft применит его из кэша." Style="{StaticResource Body}"/>
+        <Button x:Name="CopyServer" Content="Скопировать lavabox.fun" Style="{StaticResource Secondary}" HorizontalAlignment="Left" Margin="0,22,0,16"/>
+        <TextBlock Text="Вручную добавлять ZIP в список ресурспаков не нужно. Если сервер всё ещё сообщает об ошибке, открой помощь." Style="{StaticResource Body}" FontSize="12"/>
+        <Button x:Name="DoneHelp" Content="Сервер всё ещё не пускает" Style="{StaticResource Quiet}" HorizontalAlignment="Left" Padding="0,9" Margin="0,8,0,0"/>
+      </StackPanel>
+      <StackPanel x:Name="UpdatesPage" Visibility="Collapsed">
+        <TextBlock x:Name="LocalVersions" FontSize="16" FontWeight="SemiBold"/><TextBlock Text="Проверка сравнит приложение, встроенный пак и файл в выбранной сборке. Для связи с GitHub нужен интернет." Style="{StaticResource Body}"/>
+        <Button x:Name="CheckUpdates" Content="Проверить обновления" Style="{StaticResource Secondary}" HorizontalAlignment="Left" Margin="0,20,0,0"/>
+        <Border x:Name="UpdatePanel" Background="{DynamicResource Surface}" CornerRadius="8" Padding="19" Margin="0,23,0,0" Visibility="Collapsed"><StackPanel><TextBlock x:Name="UpdateTitle" FontWeight="SemiBold" FontSize="15"/><TextBlock x:Name="UpdateDetail" Style="{StaticResource Body}" FontSize="13"/><Button x:Name="DownloadUpdate" Content="Обновить приложение" Style="{StaticResource Primary}" HorizontalAlignment="Left" Margin="0,17,0,0" Visibility="Collapsed"/></StackPanel></Border>
+        <TextBlock Text="Если GitHub недоступен, скачай свежий EXE в Discord. Установить пак из уже скачанного приложения можно без интернета." Style="{StaticResource Body}" FontSize="12" Margin="0,24,0,0"/>
+      </StackPanel>
+      <StackPanel x:Name="HelpPage" Visibility="Collapsed">
+        <TextBlock Text="Сервер снова пытается скачать пак" Style="{StaticResource Section}" Margin="0,0,0,4"/><TextBlock Text="Проверь, что выбрана та же сборка, из которой заходишь. После обновления серверного пака понадобится свежий PackHelper. ZIP в resourcepacks не заменяет серверный кэш." Style="{StaticResource Body}"/>
+        <TextBlock Text="Есть OpSec или особая сборка" Style="{StaticResource Section}"/><TextBlock Text="Попробуй зайти на сервер, затем закрой игру. Свежий latest.log покажет, куда мод перенёс кэш. Заходи с тем же аккаунтом и по тому же адресу сервера." Style="{StaticResource Body}"/>
+        <WrapPanel Margin="0,18,0,0"><Button x:Name="HelpLocate" Content="Найти папку игры" Style="{StaticResource Secondary}" Margin="0,0,8,8"/><Button x:Name="HelpLog" Content="Найти кэш по логу" Style="{StaticResource Secondary}" Margin="0,0,0,8"/></WrapPanel>
+        <TextBlock Text="Ошибка при применении пака" Style="{StaticResource Section}"/><TextBlock Text="Это уже не ошибка скачивания. Открой поддержку и укажи версию Minecraft, лаунчер и моды. Не удаляй всю папку игры." Style="{StaticResource Body}"/>
+      </StackPanel>
+      <StackPanel x:Name="SupportPage" Visibility="Collapsed">
+        <TextBlock Text="Нужна помощь с входом на сервер?" Style="{StaticResource Section}" Margin="0,0,0,4"/><TextBlock Text="Напиши в Discord сервера. Укажи, на каком шаге возникла проблема и что написал Minecraft." Style="{StaticResource Body}"/>
+        <Button x:Name="Discord" Content="Открыть Discord сервера" Style="{StaticResource Secondary}" HorizontalAlignment="Left" Margin="0,16,0,8"/>
+        <TextBlock Text="Нашёл ошибку в PackHelper?" Style="{StaticResource Section}"/><TextBlock Text="Скопируй сведения и приложи их к сообщению об ошибке. Это версии и результат проверки, без личных путей и содержимого логов." Style="{StaticResource Body}"/>
+        <TextBox x:Name="Diagnostics" IsReadOnly="True" TextWrapping="Wrap" Margin="0,15,0,10"/>
+        <WrapPanel><Button x:Name="CopyDiagnostics" Content="Скопировать сведения" Style="{StaticResource Secondary}" Margin="0,0,8,8"/><Button x:Name="ReportBug" Content="Сообщить об ошибке" Style="{StaticResource Secondary}" Margin="0,0,0,8"/></WrapPanel>
+      </StackPanel>
+    </Grid></ScrollViewer>
+    <Grid Grid.Row="2"><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+      <ProgressBar x:Name="Progress" Visibility="Collapsed" Height="3" Foreground="{DynamicResource Accent}" Background="{DynamicResource Surface}" IsIndeterminate="True" Margin="0,0,0,10"/>
+      <Grid Grid.Row="1"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+        <TextBlock x:Name="Status" Foreground="{DynamicResource Muted}" FontSize="12" VerticalAlignment="Center" Margin="0,0,16,0" AutomationProperties.LiveSetting="Polite"/>
+        <Button x:Name="Back" Grid.Column="1" Content="Назад" Style="{StaticResource Quiet}" Margin="0,0,8,0"/>
+        <Button x:Name="InstallPack" Grid.Column="2" Style="{StaticResource Primary}"><TextBlock x:Name="InstallLabel" Text="Продолжить" Foreground="#241A14" FontWeight="SemiBold"/></Button>
+      </Grid>
+    </Grid>
   </Grid>
 </Grid>

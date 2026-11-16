@@ -1,0 +1,24 @@
+name: Ошибка PackHelper
+description: Расскажи, что не получилось
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Что произошло?
+      description: На каком шаге возникла ошибка и что ожидалось?
+    validations:
+      required: true
+  - type: textarea
+    id: versions
+    attributes:
+      label: Сведения из программы
+      description: Открой «Поддержка» и нажми «Скопировать сведения».
+  - type: input
+    id: launcher
+    attributes:
+      label: Лаунчер, версия игры и моды
+  - type: textarea
+    id: screenshot
+    attributes:
+      label: Скриншот или текст ошибки
+      description: Личные пути и данные аккаунта лучше скрыть. Полный лог можно передать в закрытом тикете Discord.
