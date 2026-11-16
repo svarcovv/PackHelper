@@ -15,7 +15,7 @@ namespace LavaBox.PackHelper
         {
             if(checkingUpdates||busy)return;checkingUpdates=true;checkUpdates.IsEnabled=false;checkUpdates.Content="Проверяем…";
             latest=null;manualUpdate=false;
-            ShowUpdateOffer();Element<Border>("UpdatePanel").Visibility=Visibility.Visible;
+            Element<Border>("UpdatePanel").Visibility=Visibility.Visible;
             Element<TextBlock>("UpdateTitle").Text="Проверяем версии…";
             Element<TextBlock>("UpdateDetail").Text="Сравниваем выпуск GitHub и файл в выбранной сборке.";
             downloadUpdate.Visibility=Visibility.Collapsed;
@@ -39,7 +39,7 @@ namespace LavaBox.PackHelper
                     }
                     else await PresentUpdate(result.Manifest);
                 }
-                publicStatus.Latest=latest;publicStatus.ReleaseCheckedUtc=DateTime.UtcNow;ShowUpdateOffer();await SavePublicStatus();
+                publicStatus.Latest=latest;publicStatus.ReleaseCheckedUtc=DateTime.UtcNow;await SavePublicStatus();
                 if(page=="Updates")Message("Проверка завершена.",false);
             }
             catch(Exception error)

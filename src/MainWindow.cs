@@ -56,7 +56,7 @@ namespace LavaBox.PackHelper
             Bind("NavInstall",()=>Navigate(installPage));Bind("NavUpdates",()=>Navigate("Updates"));Bind("NavHelp",()=>Navigate("Help"));Bind("Support",()=>Navigate("Support"));
             Bind("FindFolder",()=>Navigate("Locate"));Bind("LauncherHelp",()=>Navigate("Launcher"));Bind("LogGuide",()=>Navigate("Log"));Bind("HelpLog",()=>Navigate("Log"));Bind("HelpLocate",()=>Navigate("Locate"));Bind("DoneHelp",()=>Navigate("Help"));
             Bind("Back",GoBack);Bind("Source",()=>OpenUrl(release.sourceUrl));Bind("Discord",()=>OpenUrl(release.discordUrl));Bind("ReportBug",()=>OpenUrl(release.sourceUrl+"/issues/new?template=bug_report.yml"));
-            Bind("Telegram",()=>OpenUrl(release.developerUrl));Element<Button>("OpenUpdate").Click+=async delegate{if(!busy)await OpenUpdateOffer();};
+            Bind("Telegram",()=>OpenUrl(release.developerUrl));
             Bind("HelpChoose",()=>Navigate("Choose"));Bind("HelpUpdates",()=>Navigate("Updates"));Bind("HelpSupport",()=>Navigate("Support"));
             Bind("CopyServer",()=>Copy("lavabox.fun","Адрес сервера скопирован."));Bind("CopyDiagnostics",()=>Copy(Element<TextBox>("Diagnostics").Text,"Сведения скопированы."));
             Element<Button>("UsePath").Click+=async delegate{await ImportPath(Element<TextBox>("FolderInput").Text);};
@@ -71,8 +71,8 @@ namespace LavaBox.PackHelper
             foreach(string icon in new[]{"NavInstall:download","NavUpdates:refresh","NavHelp:info"}){var pair=icon.Split(':');Element<Image>(pair[0]+"Icon").Source=Icons.Read(pair[1],Brush("Accent"));}
             Element<Image>("SupportIcon").Source=Icons.Read("headset",Brush("Muted"));
             Element<Image>("SourceIcon").Source=Icons.Read("github",Brush("Muted"));
-            Element<Image>("TelegramIcon").Source=Icons.Read("telegram",Brush("Accent"));
-            Element<Image>("DiscordIcon").Source=Icons.Read("discord",Brush("Accent"));
+            Element<Image>("TelegramIcon").Source=Icons.Read("telegram",Brushes.White);
+            Element<Image>("DiscordIcon").Source=Icons.Read("discord",Brushes.White);
             Navigate("Choose",false);
         }
         private static System.IO.Stream Resource(string name){return Assembly.GetExecutingAssembly().GetManifestResourceStream("PackHelper."+name);}

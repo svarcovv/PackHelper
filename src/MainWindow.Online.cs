@@ -18,7 +18,7 @@ namespace LavaBox.PackHelper
         {
             publicStatus=await Task.Run(()=>PublicStatusCache.Read(StatusDirectory,release.packId));
             ShowDownloadCount();
-            if(publicStatus.Latest!=null){latest=publicStatus.Latest;ShowUpdateOffer();}
+            if(publicStatus.Latest!=null){latest=publicStatus.Latest;await PresentUpdate(latest);}
             await Task.WhenAll(RefreshReleaseStatus(),RefreshDownloadCount());
         }
         private async Task RefreshReleaseStatus()
@@ -31,7 +31,7 @@ namespace LavaBox.PackHelper
                 {
                     timeout.CancelAfter(TimeSpan.FromSeconds(7));var result=await client.Check(release.packId,timeout.Token);
                     if(result.Manifest!=null&&!checkingUpdates)
-                    {latest=result.Manifest;publicStatus.Latest=latest;publicStatus.ReleaseCheckedUtc=DateTime.UtcNow;ShowUpdateOffer();await SavePublicStatus();}
+                    {latest=result.Manifest;publicStatus.Latest=latest;publicStatus.ReleaseCheckedUtc=DateTime.UtcNow;await PresentUpdate(latest);await SavePublicStatus();}
                 }
             }
             catch(Exception){/* A failed background check must not interrupt installation. */}
@@ -65,18 +65,9 @@ namespace LavaBox.PackHelper
         {
             var text=Element<TextBlock>("DownloadCount");
             text.Text=(publicStatus.Downloads.HasValue?(publicStatus.DownloadsComplete?"":"≥ ")+publicStatus.Downloads.Value.ToString("N0",CultureInfo.CurrentCulture):"Нет данных");
-            System.Windows.Automation.AutomationProperties.SetName(text,"Скачивания приложения: "+text.Text);
+            System.Windows.Automation.AutomationProperties.SetName(text,"Всего скачало: "+text.Text);
             Element<Border>("DownloadStats").ToolTip="Скачивания EXE из опубликованных выпусков GitHub. Это не число уникальных игроков; Discord не учитывается."+
                 (publicStatus.Downloads.HasValue?"\nОбновлено: "+publicStatus.DownloadsCheckedUtc.ToLocalTime().ToString("g",CultureInfo.CurrentCulture):"");
         }
-        private void ShowUpdateOffer()
-        {
-            bool newer=latest!=null&&(UpdateManifest.VersionOf(latest.appVersion)>UpdateManifest.VersionOf(release.appVersion)||
-                UpdateManifest.VersionOf(latest.appVersion)==UpdateManifest.VersionOf(release.appVersion)&&latest.packSha1!=release.sha1);
-            Element<Border>("UpdateBanner").Visibility=newer?Visibility.Visible:Visibility.Collapsed;
-            if(newer)Element<TextBlock>("UpdateBannerText").Text="Доступен PackHelper "+latest.appVersion;
-        }
-        private async Task OpenUpdateOffer()
-        {Navigate("Updates");if(latest!=null)await PresentUpdate(latest);}
     }
 }

@@ -64,7 +64,7 @@
           <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
         <Image x:Name="DownloadStatsIcon" Width="20" Height="20" Margin="0,0,9,0" />
-        <TextBlock Text="Скачивания приложения" Grid.Column="1" FontSize="13" LineHeight="22" VerticalAlignment="Center" />
+        <TextBlock Text="Всего скачало" Grid.Column="1" FontSize="13" LineHeight="22" VerticalAlignment="Center" />
         <Border Grid.Column="2" Background="{DynamicResource Line}" Width="1" Height="18" Margin="14,0" />
         <TextBlock x:Name="DownloadCount" Text="Нет данных" Grid.Column="3" FontSize="16" FontWeight="SemiBold" LineHeight="22" VerticalAlignment="Center" />
       </Grid>
@@ -77,12 +77,6 @@
           <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <StackPanel>
-          <ui:CrispBorder x:Name="UpdateBanner" Background="{DynamicResource Tint}" CornerRadius="8" Padding="12,8" Margin="0,0,0,14" Visibility="Collapsed">
-            <DockPanel>
-              <Button x:Name="OpenUpdate" Content="Посмотреть" DockPanel.Dock="Right" Style="{StaticResource Quiet}" MinHeight="32" Padding="10,4" />
-              <TextBlock x:Name="UpdateBannerText" FontSize="13" VerticalAlignment="Center" />
-            </DockPanel>
-          </ui:CrispBorder>
           <Grid x:Name="Steps" Width="156" Height="4" HorizontalAlignment="Left" Margin="0,0,0,22">
             <ui:CrispBorder Background="{DynamicResource Line}" CornerRadius="2" />
             <ui:CrispBorder x:Name="StepFill" Background="{DynamicResource Accent}" CornerRadius="2" Width="52" HorizontalAlignment="Left" />
