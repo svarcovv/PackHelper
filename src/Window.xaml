@@ -18,10 +18,11 @@
       </StackPanel>
       <StackPanel Grid.Row="2">
         <Button x:Name="Source" Style="{StaticResource Quiet}" AutomationProperties.Name="Исходный код" HorizontalContentAlignment="Left" Padding="10,8" MinHeight="36">
-          <StackPanel Orientation="Horizontal">
-            <Image x:Name="SourceIcon" Width="16" Height="16" Margin="0,0,8,0"/>
-            <TextBlock Text="Исходный код" FontSize="12" VerticalAlignment="Center"/>
-          </StackPanel>
+          <Grid>
+            <Grid.ColumnDefinitions><ColumnDefinition Width="16"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+            <Image x:Name="SourceIcon" Width="16" Height="16" VerticalAlignment="Center"/>
+            <TextBlock Grid.Column="1" Text="Исходный код" FontSize="12" LineHeight="Auto" TextWrapping="NoWrap" Margin="8,0,0,0" VerticalAlignment="Center"/>
+          </Grid>
         </Button>
         <TextBlock x:Name="AppVersion" Foreground="{DynamicResource Muted}" FontSize="11" Margin="10,8,0,0"/>
       </StackPanel>
